@@ -1,0 +1,29 @@
+{
+    "type": "bubble",
+    "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "text",
+                "text": "群組功能",
+                "weight": "bold"
+            }
+        ]
+    },
+    "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "button",
+                "action": {
+                    "type": "uri",
+                    "label": "群組分帳",
+                    "uri": ""
+                }
+            }
+        ],
+        "backgroundColor": "#F0F0F0"
+    }
+}
