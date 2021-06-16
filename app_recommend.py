@@ -1,8 +1,7 @@
 import json
 import urllib.request
 import csv
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
+
 
 def systems(id):
     dic1 = {"Ahhoro": 0,
@@ -54,6 +53,8 @@ def systems(id):
             immediacy(q_d[id]["即時性"], dic1)
             beauty(q_d[id]["美觀"], dic1)
             fun(q_d[id]["趣味性"], dic1)
+            stop(q_d[id]["停止記帳的原因"], dic1)
+            habit(q_d[id]["金錢的使用習慣"], dic1)
 
             del dic1['記帳城市(付)']  # 因第二題刪
             del dic1['CW money(付)']  # 因第二題刪
@@ -69,6 +70,11 @@ def systems(id):
             immediacy(q_d[id]["即時性"], dic1)
             beauty(q_d[id]["美觀"], dic1)
             fun(q_d[id]["趣味性"], dic1)
+            stop(q_d[id]["停止記帳的原因"],dic1)
+            habit(q_d[id]["金錢的使用習慣"],dic1)
+
+
+
 
             del dic1['記帳城市(付)']  # 因第二題刪
             del dic1['MOZE3(付)']  # 因第二題刪
@@ -162,52 +168,98 @@ def beauty(number, dic1):   #美觀
 
 def fun(number, dic1): #趣味性
     if number == "5":
-        dic1["記帳城市(免)"] -= 1
-        dic1["記帳城市(付)"] -= 1
+        dic1["記帳城市(免)"] += 1
+        dic1["記帳城市(付)"] += 1
         dic1["卡那赫拉"] += 1
     elif number == "4":
-        dic1["記帳城市(免)"] -= 1
-        dic1["記帳城市(付)"] -= 1
+        dic1["記帳城市(免)"] += 1
+        dic1["記帳城市(付)"] += 1
         dic1["卡那赫拉"] += 1
         dic1["碎碎念記帳"] += 1
         dic1["記帳雞"] += 1
 
-def stop(reason, dic1): #停止記帳原因
-    #print(type(reason))
-    reasons = reason.replace(' ', '')
-    reasons_list = reasons.split(",")
-    #print(reasons_list)
+def stop(reason, dic1):
+    reasons = reason.replace(' ','')
+    reasons_list = reason.split(",")
     for res in reasons_list:
         if res == "忘記花費":
-            dic1['Money tracker'] += 1
-            dic1['CW money(免)'] += 1
-            dic1['CW money(付)'] += 1
-            dic1['碎碎念記帳'] += 1
-        if res == '忘記記帳':
-            dic1['天天記帳'] += 1
-            dic1['碎碎念記帳'] += 1
-            dic1['CW money(免)'] += 1
-            dic1['CW money(付)'] += 1
-            dic1['簡單記帳'] += 1
-            dic1['記帳城市'] += 1
+            dic1["碎碎念記帳"] += 1
+            dic1["CW money(免)"] += 1
+            dic1["CW money(付)"] += 1
+            dic1["Money tracker"] += 1
+        elif res == "忘記記帳":
+            dic1["CW money(免)"] += 1
+            dic1["CW money(付)"] += 1
+            dic1["天天記帳"] += 1
+            dic1["碎碎念記帳"] += 1
+            dic1["簡單記帳"] += 1
+            dic1["記帳城市(免)"] += 1
+            dic1["記帳城市(付)"] += 1
             dic1["MOZE3(免)"] += 1
             dic1["MOZE3(付)"] += 1
             dic1["理財幫手"] += 1
-        if res == "忙碌":
+        elif res == "忙碌":
+            dic1["CW money(免)"] += 1
+            dic1["CW money(付)"] += 1
+            dic1["碎碎念記帳"] += 1
             dic1["MOZE3(免)"] += 1
             dic1["MOZE3(付)"] += 1
-            dic1['CW money(免)'] += 1
-            dic1['CW money(付)'] += 1
-            dic1['碎碎念記帳'] += 1
+            dic1["Ahhoro"] += 1
+            dic1["理財幫手"] += 1
+        elif res == "懶惰":
+            dic1["CW money(免)"] += 1
+            dic1["CW money(付)"] += 1
+            dic1["MOZE3(免)"] += 1
+            dic1["MOZE3(付)"] += 1
+            dic1["碎碎念記帳"] += 1
+            dic1["Ahhoro"] += 1
+            dic1["理財幫手"] += 1
+        elif res == "記帳麻煩":
+            dic1["CW money(免)"] += 1
+            dic1["CW money(付)"] += 1
+            dic1["MOZE3(免)"] += 1
+            dic1["MOZE3(付)"] += 1
+            dic1["碎碎念記帳"] += 1
+            dic1["Ahhoro"] += 1
+            dic1["理財幫手"] += 1
+            dic1["記帳城市(免)"] += 1
+            dic1["記帳城市(付)"] += 1
 
-
-
-
-
-
-
-
-
+def habit(reason,dic1):
+    reasons = reason.replace(' ','')
+    reasons_list = reason.split(",")
+    for res in reasons_list:
+        if res == "時常會借還錢":
+            dic1["MOZE3(免)"] += 1
+            dic1["MOZE3(付)"] += 1
+            dic1["理財幫手"] += 1
+        if res == "需要信用卡 or 帳單繳費提醒":
+            dic1["MOZE3(免)"] += 1
+            dic1["MOZE3(付)"] += 1
+        if res == "需要紀錄固定開銷":
+            dic1["MOZE3(免)"] += 1
+            dic1["MOZE3(付)"] += 1
+        if res == "多帳戶管理（錢包、銀行、信用卡等分別紀錄":
+            dic1["CW money(免)"] += 1
+            dic1["CW money(付)"] += 1
+            dic1["MOZE3(免)"] += 1
+            dic1["MOZE3(付)"] += 1
+            dic1["Ahhoro"] += 1
+            dic1["理財幫手"] += 1
+            dic1["記帳城市(免)"] += 1
+            dic1["記帳城市(付)"] += 1
+            dic1["天天記帳"] += 1
+            dic1["Money tracker"] += 1
+        if res == "紀錄專案：紀錄特定事件所花的帳目（ex.旅行、週年慶）":
+            dic1["MOZE3(免)"] += 1
+            dic1["MOZE3(付)"] += 1
+        if res == "需要紀錄不同貨幣":
+            dic1["理財幫手"] += 1
+            dic1["記帳城市(免)"] += 1
+            dic1["記帳城市(付)"] += 1
+            dic1["CW money(免)"] += 1
+            dic1["CW money(付)"] += 1
+            dic1["天天記帳"] += 1
 
 if __name__ == '__main__':
     print(systems(id='E44061296'))
