@@ -1,0 +1,634 @@
+html,body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+    font-family: "GenJyuuGothic";
+}
+
+.acc-debts{
+    display: block;
+    position: absolute;
+    width: 100%;
+    font-size: 8px;
+    font-family: "GenJyuuGothic";
+    font-weight: 500;
+    padding-left: 28px;
+}
+
+
+.acc-name {
+    display: block;
+    position: absolute;
+    width: 100%;
+    font-size: 16px;
+    padding-left: 28px;
+}
+
+.p-title{
+    font-size: 12px;
+    font-family: "GenJyuuGothic";
+    font-weight: normal;
+}
+
+/******************************************/
+#front-cover {
+    position: fixed;
+    display: none;
+    box-sizing: border-box;
+    width: 100vw;
+    height: 100%;
+}
+
+#cover-container {
+    width: 200px;
+    height: 136px;
+    top: 30.73vh;
+
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#eng-title{
+    position: absolute;
+    width: 100%;
+    top: 0;
+}
+
+#app-icon {
+    position: absolute;
+    width: 20.5%;
+    height: 17.64%;
+    left: 6.5%;
+    top: 23.52%;
+}
+
+#chn-title {
+    position: absolute;
+    width: 57%;
+    height: 17.64%;
+    left: 34.5%;
+    top: 23.52%;
+}
+
+#welcome-btn {
+    position: absolute;
+    width: 40%;
+    height: 19.11%;
+    left: 30%;
+    top: 80.88%;
+}
+/******************************************/
+#info-page{
+    position: fixed;
+    display: none;
+    box-sizing: border-box;
+    width: 100vw;
+    height: 100%;
+}
+
+#main-page{
+    position: absolute;
+    display: block;
+    top: 0;
+    bottom: 56px;
+    width: 100vw;
+}
+
+#account-summary {
+    background-color: #515472;
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 184px;
+    top: 0;
+}
+
+
+#main-page .acc-name{
+    top: 15.76%;
+    color: #FFFFFFDE;
+}
+
+#main-page .acc-debts{
+    top: 28.26%;
+    color: #FFFFFF;
+}
+
+#payback, #paid{
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 14.13%;
+}
+
+.user-list-container{
+    display: flex;
+    position: absolute;
+    overflow-x: auto;
+    right: 100px;
+    left: 92px;
+    top: 0;
+}
+
+#payback .p-title, #paid .p-title{
+    display: block;
+    position: absolute;
+    overflow: hidden;
+    white-space: nowrap;
+    
+    line-height: 26px;
+    height: 26px;
+    width: 57px;
+    left: 35px;
+
+    font-size: 12px;
+    font-family: "GenJyuuGothic";
+    font-weight: normal;
+    
+    color: #FFFFFF;
+}
+
+#payback {
+    top: 46.73%;
+}
+
+#paid {
+    top: 71.73%;
+}
+
+#detail-btn {
+    position: absolute;
+    width: 79px;
+    height: 24px;
+    right: 13px;
+    bottom: 16px;
+}
+
+
+#group-history{
+    overflow-x: hidden;
+    display: block;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    top: 184px;
+    bottom: 0px;
+    background-color: #F5F4EF;
+}
+
+.date-record {
+    display: block;
+    position: relative;
+    height: fit-content;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.date {
+    display: block;
+    position: relative;
+    height: 17px;
+    line-height: 17px;
+    width: 100%;
+    margin-top: 16px;
+    padding-left: 7.2%;
+
+    font-size: 12px;
+    font-family: "GenJyuuGothic";
+    font-weight: Bold;
+}
+
+.record-info {
+    display: block;
+    position: relative;
+    width: 86.13%;
+    height: 88px;
+    margin-top: 12px;
+    margin-left: auto;
+    margin-right: auto;
+
+    border-radius: 12px;
+    -webkit-filter: drop-shadow(2px 2px 8px rgba(101, 96, 96, 0.3));
+    filter: drop-shadow(2px 2px 8px rgba(101, 96, 96, 0.3));
+    background-color: #FFFFFF;
+}
+
+.category-icon {
+    display: block;
+    position: absolute;
+
+    height: 30%;
+    top: 35%;
+    left: 6.19%;
+}
+
+.right-border {
+    display: block;
+    position: absolute;
+
+    height: 50%;
+    top: 25%;
+    left: 21.36%;
+    border-right: 1px solid #515472;
+}
+
+.user-name-container {
+    
+    display: block;
+    width: fit-content;
+    height: 26px;
+    line-height: 26px;
+    padding-left: 11px;
+    padding-right: 11px;
+    border-radius: 13px;
+    background-color: #EADAA6;
+}
+
+#account-summary .user-name-container {
+    position: relative;
+    left: 0;
+    margin-right: 11px;
+}
+#group-history .user-name-container {
+    position: absolute;
+    top: 27.27%;
+    left: 30.03%;
+}
+
+.user-name {
+    letter-spacing: 0.89px;
+    font-size: 10px;
+    font-family: "GenJyuuGothic";
+    font-weight: 500;
+    
+    color: #000000DE;
+}
+
+.item-name {
+    display: block;
+    position: absolute;
+
+    top: 60.22%;
+    left: 32.81%;
+    width: fit-content;
+    height: 14px;
+    line-height: 14px;
+    font-size: 10px;
+
+    color: #6F7070;
+
+}
+.total-cost {
+    display: block;
+    position: absolute;
+    width: fit-content;
+    font-size: 12px;
+    font-weight: 500;
+    color: #000000DE;
+}
+
+.record-info .total-cost {
+    top: 37.5%;
+    right: 5.57%;
+    height: 17px;
+    line-height: 17px;
+}
+
+.my-share {
+    display: block;
+    position: absolute;
+
+    top: 60.22%;
+    right: 5.57%;
+    width: fit-content;
+    height: 14px;
+    line-height: 14px;
+    font-size: 10px;
+
+    color: #6F7070;
+}
+
+
+/******************************/
+#bot-blur {
+    position: absolute;
+    width: 100%;
+    height: 56px;
+    bottom: 0;
+    background-color: #F4F4F4;
+    -webkit-filter: drop-shadow(0 3 6 rgba(0, 0, 0, 0.16));
+    filter: drop-shadow(0 3 6 rgba(0, 0, 0, 0.16));
+    /*backdrop-filter: blur(1) brightness(-1) opacity(80%);*/
+}
+
+#add-btn {
+    display: block;
+    position: relative;
+    height: 100%;
+    bottom: 50%;
+    margin: auto;
+}
+
+/******************************/
+#detail-page{
+    position: absolute;
+    display: none;
+    width: 100vw;
+    left: 100vw;
+    top: 0;
+    bottom: 56px;
+}
+
+#account-container {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 88px;
+    background-color: #F5F4EF;
+}
+
+#detail-page .acc-name{
+    top: 34.09%;
+    color: #515472;
+}
+
+#detail-page .acc-debts{
+    top: 60.22%;
+    color: #515472;
+}
+
+.back-btn {
+    display: block;
+    position: absolute;
+    width: 14px;
+    height: 19px;
+    right: 16px;
+    bottom: 23px;
+}
+
+#account-info {
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    top: 88px;
+    bottom: 0px;
+    background-color: #FFFFFF;
+}
+#payback-container {
+
+    display: block;
+    position: relative;
+    width: 100%;
+    /* height: 13.65%; */
+    height: fit-content;
+}
+#paid-container {
+
+    display: block;
+    position: relative;
+    width: 100%;
+    /* height: 13.65%; */
+    height: fit-content;
+}
+
+#border-bot {
+    position: relative;
+    left: 31.25px;
+    right: 31.25px;
+    bottom: 0;
+    border-bottom: 1px solid #B9B2B2;
+}
+
+#payback-container .p-title, #paid-container .p-title{
+    display: block;
+    position: relative;
+    
+    line-height: 17px;
+    height: 17px;
+    width: 100%;
+    margin-top: 23px;
+    margin-bottom: 25px;
+    padding-left: 40px;
+    
+    color: #6F7070;
+}
+
+.d-list-container{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: fit-content;
+}
+
+.interact-user-container{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 26px;
+    margin-bottom: 18px;
+}
+
+.interact-user-container .user-name-container {
+    position: absolute;
+    top: 0;
+    left: 40px;
+}
+
+.interact-user-container .total-cost {
+    top: 0;
+    right: 119px;
+    height: 26px;
+    line-height: 26px;
+}
+
+.interact-btn {
+    display: block;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    right: 30px;
+    width: 65px;
+}
+
+.history-grid {
+    margin-top: 31px;
+    margin-bottom: 31px;
+    display: grid;
+    height: 26px;
+    line-height: 26px;
+    position: relative;
+    padding-left: 40px;
+    padding-right: 40px;
+    width: calc(100% - 80px);
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.time-stamp {
+    color: #707070;
+    font-size: 12px;
+    font-weight: 500;
+    width: 100%;
+    text-align: left;
+}
+
+.history-grid .user-name-container{
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #F5F4EF;
+}
+
+.history-grid .user-name-container .user-name{
+    color: #6F6F6F;
+}
+
+.describe {
+    color: #707071;
+    font-size: 12px;
+    font-weight: 500;
+    width: 100%;
+    text-align: right;
+}
+/******************************/
+#add-page{
+    position: fixed;
+    display: block;
+    box-sizing: border-box;
+    width: 100vw;
+    height: 100%;
+}
+
+#add-header{
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 90px;
+    background-color:#515472;
+}
+
+#add-account {
+    position: absolute;
+    display: block;
+    width: 301px;
+    height: 62px;
+    top: 14px;
+    left: 3.46%;
+    object-fit: cover;
+    object-position: left center;
+}
+
+#close-btn {
+    position: absolute;
+    display: block;
+    width: 26px;
+    height: 29px;
+    top: 31px;
+    right: 6.67%;
+}
+
+
+#add-content{
+    position: absolute;
+    display: block;
+    width: 100%;
+    top: 90px;
+    bottom: 56px;
+    background-color: #FFFFFF;
+}
+
+#add-category {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 161px;
+    padding-top: 5px;
+}
+
+
+
+.add-title{
+    display: block;
+    position: absolute;
+    height: 50px;
+    top: 30px;
+    left: 10.67%;
+}
+
+#category-flex{
+    position: absolute;
+    width: 247px;
+    top: 30px;
+    height: 103px;
+    right: 10.13%;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: space-around;
+}
+
+#category-flex img{
+    width: 30px;
+    margin-left: 18px;
+}
+
+#add-items, #add-price {
+    display: block;
+    position: relative;
+    height: 85px;
+    width: 100%;
+}
+
+.add-bot-border {
+    position: absolute;
+    display: block;
+    width: 80%;
+    left: 10%;
+    bottom: 0;
+    border-bottom: 1px solid #0000001F;
+}
+
+#twd {
+    display: block;
+    position: absolute;
+    height: 34px;
+    top: 40px;
+    right: 10.13%;
+}
+
+#next-btn {
+    display: block;
+    position: absolute;
+    height: 47px;
+    top: 4px;
+    right: 2.4%;
+}
+
+
+
+
+
+#add-footer{
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 56px;
+    bottom: 0;
+    background-color: #F7F7FA;
+}
+
+
+

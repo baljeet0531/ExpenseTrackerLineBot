@@ -2,16 +2,386 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-control" content="no-cache, must-revalidate">
-    <link rel="icon" type="image/jpg" href="../image/hi.jpg" />
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+
+
+    <link rel="stylesheet" href="./index.css?v2">
+    <link href="./font/GenJyuuGothic-Normal/GenJyuuGothic-Normal.css" type="text/css" rel="stylesheet" />
+    <!-- <link href="./font/GenJyuuGothic-Medium/GenJyuuGothic-Medium.css" type="text/css" rel="stylesheet" /> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="icon" type="image/png" href="../image/app_icon.png" />
+    <title>群組分帳小幫手</title>
 </head>
 
 <body>
-    <p><b>Group Id:</b></p>
-    <p id='group-id'></p>
-    <p><b>Group Name:</b></p>
-    <p id='group-name'></p>
+    <div id="front-cover">
+        <div id="cover-container">
+            <img id="eng-title" src="../image/eng-title.png">
+            <img id="app-icon" src="../image/app_icon.png">
+            <img id="chn-title" src="../image/chn-title.png">
+            <img id="welcome-btn" src="../image/welcome.png">
+        </div>
+    </div>
+    <div id="info-page">
+        <div id="main-page">
+            <div id="account-summary">
+                <p class="acc-name">'S ACCOUNT</p>
+                <p class="acc-debts">TOTAL DEBTS:</p>
+                <div id="payback">
+                    <p class="p-title">我要還</p>
+                    <div class="user-list-container">
+                        <div class="user-name-container">
+                            <p class="user-name">WINNIE</p>
+                        </div>
+                        <div class="user-name-container">
+                            <p class="user-name">Elaine</p>
+                        </div>
 
-    <script src="index.js"></script>
+                        <div class="user-name-container">
+                            <p class="user-name">Elaine</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">Elaine</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">Elaine</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">Elaine</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="paid">
+                    <p class="p-title">我先付</p>
+                    <div class="user-list-container">
+                        <div class="user-name-container">
+                            <p class="user-name">APPLE</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">APPLE</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">APPLE</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">APPLE</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">APPLE</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">APPLE</p>
+                        </div>
+
+                        <div class="user-name-container">
+                            <p class="user-name">APPLE</p>
+                        </div>
+                    </div>
+                </div>
+                <img id="detail-btn" src="../image/detail-btn.png">
+            </div>
+            <div id="group-history">
+                <div class="date-record">
+                    <p class="date">Today</p>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                </div>
+                <div class="date-record">
+                    <p class="date">Today</p>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                    <div class="record-info">
+                        <img class="category-icon" src="../image/traffic.png">
+                        <div class="right-border"></div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <p class="item-name">計程車</p>
+                        <p class="total-cost">250 twd</p>
+                        <p class="my-share">My Share: 50 twd</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="detail-page">
+            <div id="account-container">
+                <p class="acc-name">'S ACCOUNT</p>
+                <p class="acc-debts">TOTAL DEBTS:</p>
+                <img class="back-btn" src="../image/back-btn.png">
+            </div>
+
+            <div id="account-info">
+                <div id="payback-container">
+                    <p class="p-title">我要還</p>
+                    <div class="d-list-container">
+                        <div class="interact-user-container">
+                            <div class="user-name-container">
+                                <p class="user-name">Barry</p>
+                            </div>
+                            <p class="total-cost">-50 twd</p>
+                            <img class="interact-btn payback-btn" src="../image/payback-btn.png">
+                        </div>
+                        <div class="interact-user-container">
+                            <div class="user-name-container">
+                                <p class="user-name">Barry</p>
+                            </div>
+                            <p class="total-cost">-50 twd</p>
+                            <img class="interact-btn payback-btn" src="../image/payback-btn.png">
+                        </div>
+                    </div>
+                    <div id="border-bot"></div>
+                </div>
+                <div id="paid-container">
+                    <p class="p-title">我先付</p>
+                    <div class="d-list-container">
+                        <div class="interact-user-container">
+                            <div class="user-name-container">
+                                <p class="user-name">Banana</p>
+                            </div>
+                            <p class="total-cost">50 twd</p>
+                            <img class="interact-btn recieved-btn" src="../image/received-btn.png">
+                        </div>
+
+                        <div class="interact-user-container">
+                            <div class="user-name-container">
+                                <p class="user-name">Banana</p>
+                            </div>
+                            <p class="total-cost">50 twd</p>
+                            <img class="interact-btn recieved-btn" src="../image/received-btn.png">
+                        </div>
+
+                        <div class="interact-user-container">
+                            <div class="user-name-container">
+                                <p class="user-name">Banana</p>
+                            </div>
+                            <p class="total-cost">50 twd</p>
+                            <img class="interact-btn recieved-btn" src="../image/received-btn.png">
+                        </div>
+                    </div>
+                    <div id="border-bot"></div>
+                </div>
+                <div id="acc-history">
+                    <div class="history-grid">
+                        <div>
+                            <p class="time-stamp">5/6 14:00</p>
+                        </div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <div>
+                            <p class="describe">我已還 50 twd</p>
+                        </div>
+                    </div>
+                    <div class="history-grid">
+                        <div>
+                            <p class="time-stamp">5/6 14:00</p>
+                        </div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <div>
+                            <p class="describe">我已還 50 twd</p>
+                        </div>
+                    </div>
+                    <div class="history-grid">
+                        <div>
+                            <p class="time-stamp">5/6 14:00</p>
+                        </div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <div>
+                            <p class="describe">我已還 50 twd</p>
+                        </div>
+                    </div>
+
+                    <div class="history-grid">
+                        <div>
+                            <p class="time-stamp">5/6 14:00</p>
+                        </div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <div>
+                            <p class="describe">我已還 50 twd</p>
+                        </div>
+                    </div>
+                    <div class="history-grid">
+                        <div>
+                            <p class="time-stamp">5/6 14:00</p>
+                        </div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <div>
+                            <p class="describe">我已還 50 twd</p>
+                        </div>
+                    </div>
+                    <div class="history-grid">
+                        <div>
+                            <p class="time-stamp">5/6 14:00</p>
+                        </div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <div>
+                            <p class="describe">我已還 50 twd</p>
+                        </div>
+                    </div>
+                    <div class="history-grid">
+                        <div>
+                            <p class="time-stamp">5/6 14:00</p>
+                        </div>
+                        <div class="user-name-container">
+                            <p class="user-name">Barry</p>
+                        </div>
+                        <div>
+                            <p class="describe">我已還 50 twd</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bot-blur">
+            <img id="add-btn" src="../image/add-btn.png">
+        </div>
+
+    </div>
+    <div id="add-page">
+        <div id="add-header">
+            <img id="add-account" src="../image/add-account.png">
+            <img id="close-btn" src="../image/close-btn.png">
+        </div>
+        <div id="add-content">
+            <div id="add-category">
+                <img class="add-title" src="../image/add-category.png">
+                <div id="category-flex">
+                    <img id="food" src="../image/food.png">
+                    <img id="traffic" src="../image/traffic.png">
+                    <img id="shopping" src="../image/shopping.png">
+                    <img id="entertainment" src="../image/entertainment.png">
+                    <img id="study" src="../image/study.png">
+                    <img id="medical" src="../image/medical.png">
+                    <img id="househlod" src="../image/househlod.png">
+                    <img id="cosmetic" src="../image/cosmetic.png">
+                    <img id="others" src="../image/others.png">
+                </div>
+            </div>
+            <div id="add-items">
+                <img class="add-title" src="../image/add-items.png">
+                <div class="add-bot-border"></div>
+            </div>
+            <div id="add-price">
+                <img class="add-title" src="../image/add-price.png">
+                <img id="twd" src="../image/twd.png">
+                <div class="add-bot-border"></div>
+            </div>
+        </div>
+        <div id="add-footer">
+            <img id="next-btn" src="../image/next.png">
+        </div>
+
+        <script src="./index.js?v2"></script>
 </body>

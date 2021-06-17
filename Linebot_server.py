@@ -23,7 +23,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://eb0ad3f05017.ngrok.io'
+ngrok_url = 'https://67b800cec216.ngrok.io'
 
 
 # 載入richmenu
@@ -95,12 +95,16 @@ def handle_message(event):
         if event.source.type == 'group':  # 群組功能
 
             group_id = event.source.group_id
+            user_id = event.source.user_id
+            profile = line_bot_api.get_profile(user_id)
+            user_name = profile.display_name
 
             # set flex message
             flex_message = lf.setting_flex_message()
             # set action uri of flex message
             flex_message["footer"]["contents"][0]["action"]["uri"] = ngrok_url + \
-                '/webpage/index.html?groupId=' + group_id
+                '/webpage/index.html?groupId=' + group_id + \
+                '&userId=' + user_id + '&userName=' + user_name
             # send flex message to user
             line_bot_api.reply_message(
                 event.reply_token,
@@ -108,14 +112,6 @@ def handle_message(event):
                     alt_text='群組功能',
                     contents=flex_message)
             )
-
-            # get group member
-            ##
-            # member_ids_res = line_bot_api.get_group_member_ids(group_id)
-            # print(type(member_ids_res))
-            # print(member_ids_res)
-            # print(type(member_ids_res.member_ids))
-            # print(member_ids_res.member_ids)
 
             # web
             ##
@@ -140,6 +136,8 @@ def handle_message(event):
 # 收到Postback event
 @ handler.add(PostbackEvent)
 def handle_postback(event):
+    line_bot_api.reply_message(
+        event.reply_token, TextSendMessage(text="postback"))
     print(event)
 
 
