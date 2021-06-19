@@ -45,23 +45,36 @@ def get_alert_time_user():
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
         data= json.load(f, strict=False)
     now = time.ctime().split(" ")[3][:5]
-
     user=[]
+    user2=[]
     for i in data:
-
         if data[i]["time"]==now:
             user.append(i)
-
-    return user
-
+            if data[i]["audio"]!="0":
+               user2.append(i)
+    return user,user2
 def get_audio_user():
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
         data = json.load(f, strict=False)
     user=[]
     for i in data:
-        if data[i]["audio"]=="1":
-            user.append(i)
+        if data[i]["audio"] != "0":
+           user.append(i)
+
     return user
+
+def return_alert_data():
+    with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
+        data= json.load(f, strict=False)
+    return data
+
+
+
+
+if __name__ == "__main__":
+    print(get_audio_user())
+
+
 
 
 
