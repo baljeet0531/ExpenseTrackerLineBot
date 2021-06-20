@@ -8,7 +8,7 @@
     <meta http-equiv="expires" content="0">
 
 
-    <link rel="stylesheet" href="./index.css?v2">
+    <link rel="stylesheet" href="./index.css?v4">
     <link href="./font/GenJyuuGothic-Normal/GenJyuuGothic-Normal.css" type="text/css" rel="stylesheet" />
     <!-- <link href="./font/GenJyuuGothic-Medium/GenJyuuGothic-Medium.css" type="text/css" rel="stylesheet" /> -->
 
@@ -358,30 +358,102 @@
             <div id="add-category">
                 <img class="add-title" src="../image/add-category.png">
                 <div id="category-flex">
-                    <img id="food" src="../image/food.png">
-                    <img id="traffic" src="../image/traffic.png">
-                    <img id="shopping" src="../image/shopping.png">
-                    <img id="entertainment" src="../image/entertainment.png">
-                    <img id="study" src="../image/study.png">
-                    <img id="medical" src="../image/medical.png">
-                    <img id="househlod" src="../image/househlod.png">
-                    <img id="cosmetic" src="../image/cosmetic.png">
-                    <img id="others" src="../image/others.png">
+                    <div id="food" class="">
+                        <img src="../image/food.png">
+                        <p>飲食</p>
+                    </div>
+                    <div id="traffic" class="">
+                        <img src="../image/traffic.png">
+                        <p>交通</p>
+                    </div>
+                    <div id="shopping" class="">
+                        <img src="../image/shopping.png">
+                        <p>購物</p>
+                    </div>
+                    <div id="entertainment" class="">
+                        <img src="../image/entertainment.png">
+                        <p>娛樂</p>
+                    </div>
+                    <div id="study" class="">
+                        <img src="../image/study.png">
+                        <p>學習</p>
+                    </div>
+                    <div id="medical" class="">
+                        <img src="../image/medical.png">
+                        <p>醫療</p>
+                    </div>
+                    <div id="househlod" class="">
+                        <img src="../image/househlod.png">
+                        <p>家居</p>
+                    </div>
+                    <div id="cosmetic" class="">
+                        <img src="../image/cosmetic.png">
+                        <p>美容</p>
+                    </div>
+                    <div id="others" class="">
+                        <img src="../image/others.png">
+                        <p>其他</p>
+                    </div>
                 </div>
             </div>
             <div id="add-items">
                 <img class="add-title" src="../image/add-items.png">
+                <input type="text" placeholder="請輸入項目(最多15字)..." maxlength="15">
                 <div class="add-bot-border"></div>
             </div>
             <div id="add-price">
                 <img class="add-title" src="../image/add-price.png">
+                <input type="number" placeholder="請輸入金額(正整數)..." min="1" oninput="validity.valid||(value='');">
+                <!-- 處理開頭為0 -->
                 <img id="twd" src="../image/twd.png">
                 <div class="add-bot-border"></div>
             </div>
         </div>
+        <div id="share-content">
+            <div id="who-pay">
+                <div class="share-title">
+                    <p class="share-chn-title">誰付的錢</p>
+                    <p class="share-eng-title">Who pay</p>
+                </div>
+                <div id="pay-user-flex">
+                    <div class="user-name-container">
+                        <p class="user-name">CC</p>
+                    </div>
+                </div>
+                <div class="add-bot-border"></div>
+            </div>
+            <div id="who-share">
+                <div class="share-title">
+                    <p class="share-chn-title">誰要分攤</p>
+                    <p class="share-eng-title">Who share</p>
+                </div>
+                <div id="share-user-flex">
+                    <div class="user-name-container">
+                        <p class="user-name">TT</p>
+                    </div>
+                    <div class="user-name-container">
+                        <p class="user-name">MARK</p>
+                    </div>
+                    <div class="user-name-container">
+                        <p class="user-name">TIM</p>
+                    </div>
+                    <div class="user-name-container">
+                        <p class="user-name">WINNIE</p>
+                    </div>
+                    <div class="user-name-container">
+                        <p class="user-name">DAVID</p>
+                    </div>
+                </div>
+                <div id="edit-share-user-container">
+                </div>
+            </div>
+        </div>
         <div id="add-footer">
             <img id="next-btn" src="../image/next.png">
+            <img id="save-btn-inact" src="../image/save-inact.png">
+            <img id="save-btn-act" src="../image/save-act.png">
+            <img id="add-pg-back-btn" src="../image/back-btn.png">
         </div>
-
-        <script src="./index.js?v2"></script>
+    </div>
+    <script src="./index.js?v2"></script>
 </body>
