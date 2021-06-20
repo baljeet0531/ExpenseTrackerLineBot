@@ -27,7 +27,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://11fea6bef31b.ngrok.io'
+ngrok_url = 'https://0044b08e246f.ngrok.io'
 
 
 # 載入richmenu
@@ -91,17 +91,27 @@ def handle_message(event):
     text = event.message.text
 
     if text == "記帳推薦":
-        #app_recommend.systems(event.source.user_id)
         muilt_reply = []
         muilt_reply.append(TextSendMessage
-                           (text="以下為您的ID以及推薦你適合記帳程式的連結。"
-                                 "進入連結後請在第一題填入我們提供的ID進行，謝謝！"))
+                           (text="以下為您的ID以及推薦你適合記帳程式的連結。\n進入連結後請在第一題填入我們提供的ID進行，謝謝！"))
         muilt_reply.append(TextSendMessage(text=event.source.user_id))
         muilt_reply.append(TextSendMessage(text='https://forms.gle/9i3bmXM6QXJv3gpV8'))
         response = line_bot_api.reply_message(
             event.reply_token, muilt_reply)
-    elif text == "群組分帳":
-        response = text + "功能實作中"
+
+    elif text == "記帳推薦結果":
+        with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
+            q_d = json.load(object)
+
+        if q_d[event.source.user_id] == event.source.user_id: ##這句有問題
+            app = app_recommend.systems(event.source.user_id)
+            response = line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(
+                    text="我會推薦你" + app + "去紀錄帳目"))
+        else:
+            response = line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
+
     elif text == "記帳提醒":
         flex_message = lf.setting_alert_message()
         line_bot_api.reply_message(
