@@ -5,7 +5,6 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-
 def systems(id):
     dic1 = {"Ahhoro": 0,
             "記帳城市(免)": 0,
@@ -38,8 +37,8 @@ def systems(id):
     result = {}  # 創建一個新的dict
     # print(result)
     for i in data:  # 把原本的data這個list一個一個丟進去這個dict中
-        result[i['建立一個ID吧！']] = i  # 把在data中ID這個key的value作為這次reuslt這個dict中的key
-        del i['建立一個ID吧！']
+        result[i['請填入記帳幫手提供您的ID！']] = i  # 把在data中ID這個key的value作為這次reuslt這個dict中的key
+        del i['請填入記帳幫手提供您的ID！']
     # print(result[id])  #利用stu_id去尋找以上整理出來的dict中符合ID的dict
     with open('questionnaire_data.json', 'w', encoding='utf-8') as object:
         json.dump(result, object, ensure_ascii=False, indent=4)
@@ -76,9 +75,6 @@ def systems(id):
 
 
         return total(dic1)
-
-
-
 
     elif q_d[id]['你的手機系統?'] == "IOS":
         if q_d[id]["是否會介意付費的記帳程式"] == "YES":
@@ -219,7 +215,7 @@ def fun(number, dic1):  # 趣味性
 
 def stop(reason, dic1):
     reasons = reason.replace(' ', '')
-    reasons_list = reason.split(",")
+    reasons_list = reasons.split(",")
     for res in reasons_list:
         if res == "忘記花費":
             dic1["碎碎念記帳"] += 1
