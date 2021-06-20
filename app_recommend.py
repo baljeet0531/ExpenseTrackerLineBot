@@ -63,7 +63,7 @@ def systems(id):
             del dic1['CW money(付)']  # 因第二題刪
             del dic1["MOZE3(免)"]  # 因第一題刪
             del dic1["MOZE3(付)"]  # 因第一題刪
-            total(dic1)
+
 
         elif q_d[id]["是否會介意付費的記帳程式"] == "NO":
             functionality(q_d[id]["功能性"], dic1)
@@ -73,9 +73,9 @@ def systems(id):
             fun(q_d[id]["趣味性"], dic1)
             stop(q_d[id]["停止記帳的原因"], dic1)
             habit(q_d[id]["金錢的使用習慣"], dic1)
-            total(dic1)
 
-        return dic1
+
+        return total(dic1)
 
 
 
@@ -94,7 +94,7 @@ def systems(id):
             del dic1['MOZE3(付)']  # 因第二題刪
             del dic1['CW money(付)']  # 因第二題刪
             del dic1['理財幫手']  # 因第二題刪
-            total(dic1)
+
 
         elif q_d[id]["是否會介意付費的記帳程式"] == "NO":
             functionality(q_d[id]["功能性"], dic1)
@@ -104,9 +104,9 @@ def systems(id):
             fun(q_d[id]["趣味性"], dic1)
             stop(q_d[id]["停止記帳的原因"], dic1)
             habit(q_d[id]["金錢的使用習慣"], dic1)
-            total(dic1)
 
-        return dic1
+
+        return total(dic1)
 
 
 def functionality(number, dic1):  # 功能性
@@ -267,7 +267,7 @@ def stop(reason, dic1):
 
 def habit(reason, dic1):
     reasons = reason.replace(' ', '')
-    reasons_list = reason.split(",")
+    reasons_list = reasons.split(",")
     for res in reasons_list:
         if res == "時常會借還錢":
             dic1["MOZE3(付)"] += 1
@@ -311,11 +311,10 @@ def habit(reason, dic1):
 
 
 def total(dic1):
-    dic1
     max(dic1.values())
     for key, value in dic1.items():
         if value == max(dic1.values()):
-            print(key, value)
+            return key
 
 
 if __name__ == '__main__':
