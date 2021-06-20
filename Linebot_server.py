@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request, abort, send_file
-
+from flask import Flask, request
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
@@ -13,6 +12,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from bs4 import BeautifulSoup
 from threading import Timer
+
 import Linebot_function as lf  # import自己寫的linebot功能
 # import XXXX 時如果有error，請google python install XXXX，通常在terminal下 pip install XXXX 指令就可以安裝了
 #
@@ -74,10 +74,15 @@ def callback():
 @handler.add(MessageEvent, message=AudioMessage)
 def handle_message(event):
     print(event)
+    a=lf.return_alert_data()[event.source.user_id]["audio"]
+    print(a)
     if event.source.type == 'user':
-        lf.enter_alert_audio_data(user_id=event.source.user_id,aud="1")
+        a=int(a)+1
+        lf.enter_alert_audio_data(event.source.user_id,str(a))
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text="記得記帳"))
+
+
 
 # 收到message event
 @handler.add(MessageEvent, message=TextMessage)
@@ -94,10 +99,11 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             FlexSendMessage(
-                alt_text="記帳提醒",
-                contents=flex_message)
-        )
+                     alt_text="記帳提醒",
+                     contents=flex_message)
+            )
         lf.alert_data(event.source.user_id)
+
     elif text == "網址":  # liff網址
         response = "https://liff.line.me/1656056998-RP6bYLXr"
 
@@ -112,7 +118,6 @@ def handle_message(event):
         return
     elif text == "功能":
         if event.source.type == 'group':  # 群組功能
-
             group_id = event.source.group_id
             user_id = event.source.user_id
             profile = line_bot_api.get_profile(user_id)
@@ -144,26 +149,26 @@ def handle_message(event):
 
         elif event.source.type == 'user':  # 個人功能
             response = "個人功能"
+    elif text=="已經記了":
+        lf.enter_alert_audio_data(event.source.user_id,"0")
     else:
         return
 
         # 回覆文字訊息
     line_bot_api.reply_message(
-        event.reply_token, TextSendMessage(text=response))
+        event.reply_token, TextSendMessage(text= response))
 
 
 # 收到Postback event
 @ handler.add(PostbackEvent)
 def handle_postback(event):
-    line_bot_api.reply_message(
-        event.reply_token, TextSendMessage(text="postback"))
     print(event)
-    postback = event.postback.data
-    time = event.postback.params
+    postback=event.postback.data
+    time=event.postback.params
 
-    if postback == "time":
-        reply = "設定成功!將於每日" + time["time"] + "提醒你記帳!"
-        lf.enter_alert_time_data(user_id=event.source.user_id, tm=time["time"], )
+    if postback=="time":
+        reply="設定成功!將於每日"+time["time"]+"提醒你記帳!"
+        lf.enter_alert_time_data(user_id=event.source.user_id,tm=time["time"],)
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=reply))
 
@@ -179,49 +184,47 @@ def handle_join(event):
             preview_image_url=ngrok_url + "/image/hi.jpg"
         )
     )
-#push message
-#定時提醒
 def alert():
-
     while lf.get_alert_time_user():
-        user_id = lf.get_alert_time_user()
-        #print(user_id)
+        alert_id,audio_id = lf.get_alert_time_user()
+        # print(user_id)
+
         try:
-            for i in user_id:
+            for i in alert_id:
                 line_bot_api.push_message(i, TextSendMessage(text='記得每天記帳呦!'))
-            break
-        except:
-            pass
+                #break
+            #break
+            for i in audio_id:
 
-sched = BackgroundScheduler()
-sched.add_job(alert,'cron',second=1)
-sched.start()
-
-#def check():
-while lf.get_audio_user():
-    now = time.ctime().split(" ")[3][:5]
-    if now == "22:32":
-        user_id = lf.get_audio_user()
-        template_message = lf.setting_check_message()
-        for i in user_id:
-            line_bot_api.push_message(i,
-                                      TemplateSendMessage(
+                mess="你還有{}筆語音還沒紀錄".format(lf.return_alert_data()[i]["audio"])
+                line_bot_api.push_message(i, TemplateSendMessage(
                                           alt_text='Confirm template',
                                           template=ConfirmTemplate(
-                                              text='Are you sure?',
+                                              text=mess,
                                               actions=[
                                                   MessageAction(
                                                       label='已經記了',
-                                                      text='yes'
+                                                      text='已經記了'
                                                   ),
                                                   MessageAction(
                                                       label='等等再說',
-                                                      text='no'
+                                                      text='等等再說'
                                                   )
                                               ]
                                           )
                                       ))
-    time.sleep(59)
+                break
+            break
+        except:
+            pass
+
+
+
+sched = BackgroundScheduler()
+sched.add_job(alert,'cron',second=59)
+sched.start()
+
+
 
 
 
