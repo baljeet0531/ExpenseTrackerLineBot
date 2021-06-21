@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from linebot.models.responses import Group
 import Linebot_function as lf  # import自己寫的linebot功能
 from threading import Timer
 from bs4 import BeautifulSoup
@@ -10,6 +11,7 @@ import requests
 import os
 import json
 import configparser
+import urllib
 from linebot.models import *
 from linebot.exceptions import InvalidSignatureError
 from linebot import LineBotApi, WebhookHandler
@@ -28,7 +30,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://0044b08e246f.ngrok.io'
+ngrok_url = 'https://03daf4163d32.ngrok.io'
 
 
 # 載入richmenu
@@ -51,6 +53,37 @@ def richmenu():
             'POST', 'https://api.line.me/v2/bot/user/all/richmenu/' + a, headers=headers)
     except:
         pass
+
+
+@app.route("/webpage/save_record", methods=['POST'])
+def save_record():
+    body = request.get_json()
+    group_id = body["groupID"]
+    date = body["date"]
+    host = body["save_json"]["host"]
+    with open("./webpage/group_data.json", "r", encoding='utf-8') as f:
+        data = json.load(f)
+
+    if group_id not in data:
+        print("no group record")
+        abort(400)
+
+    if host not in data[group_id]["user_list"]:
+        print("invalid host")
+        abort(400)
+
+    if date not in data[group_id]["history"]:
+        data[group_id]["history"][date] = {}
+
+    date_record_num = len(data[group_id]["history"][date].keys()) + 1
+
+    data[group_id]["history"][date].update(
+        {date_record_num: body["save_json"]})
+
+    with open("./webpage/group_data.json", "w", encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+    return 'save'
 
 
 @app.route("/callback", methods=['POST'])  # 路由
@@ -78,7 +111,6 @@ def callback():
 def handle_message(event):
     print(event)
     a = lf.return_alert_data()[event.source.user_id]["audio"]
-    print(a)
     if event.source.type == 'user':
         a = int(a)+1
         lf.enter_alert_audio_data(event.source.user_id, str(a))
@@ -149,12 +181,15 @@ def handle_message(event):
             profile = line_bot_api.get_profile(user_id)
             user_name = profile.display_name
 
+            # uri encode
+            params = {'groupId': group_id}
+
             # set flex message
             flex_message = lf.setting_flex_message()
             # set action uri of flex message
-            flex_message["footer"]["contents"][0]["action"]["uri"] = ngrok_url + \
-                '/webpage/index.html?groupId=' + group_id + \
-                '&userId=' + user_id + '&userName=' + user_name
+            flex_message["footer"]["contents"][2]["action"]["uri"] = ngrok_url + \
+                '/webpage/index.html?' + \
+                urllib.parse.urlencode(params) + '&v=1'
             # send flex message to user
             line_bot_api.reply_message(
                 event.reply_token,
@@ -188,14 +223,23 @@ def handle_message(event):
 
 @ handler.add(PostbackEvent)
 def handle_postback(event):
-    print(event)
     postback = event.postback.data
-    time = event.postback.params
 
     if postback == "time":
+        time = event.postback.params
         reply = "設定成功!將於每日"+time["time"]+"提醒你記帳!"
         lf.enter_alert_time_data(
             user_id=event.source.user_id, tm=time["time"],)
+        line_bot_api.reply_message(
+            event.reply_token, TextSendMessage(text=reply))
+    elif postback == "開始使用":
+        group_id = event.source.group_id
+        user_id = event.source.user_id
+        user_name = line_bot_api.get_profile(
+            user_id).display_name
+
+        reply = lf.register_to_group_data(group_id, user_id, user_name)
+
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=reply))
 
@@ -203,13 +247,33 @@ def handle_postback(event):
 # 收到join event
 @ handler.add(JoinEvent)
 def handle_join(event):
-    print(event)
-    # reply image message
+
+    reply_text = "大家好~我是你們的記帳幫手，在群組中可以替大家完成分帳的任務喔!!\n記得先點選\"開始使用\"在網頁中才看的到妳的名字呦!!"
+
+    # uri encode
+    params = {'groupId': event.source.group_id}
+
+    # set flex message
+    flex_message = lf.setting_flex_message()
+    # set action uri of flex message
+    flex_message["footer"]["contents"][2]["action"]["uri"] = ngrok_url + \
+        '/webpage/index.html?' + urllib.parse.urlencode(params)
+    # reply message
     line_bot_api.reply_message(
-        event.reply_token, ImageSendMessage(
-            original_content_url=ngrok_url + "/image/hi.jpg",
-            preview_image_url=ngrok_url + "/image/hi.jpg"
-        )
+        event.reply_token,
+        [
+            ImageSendMessage(
+                original_content_url='https://drive.google.com/uc?id=1BoKk4P5yD1FJXLuq3OhGJ94m32c841jK',
+                preview_image_url='https://drive.google.com/uc?id=1BoKk4P5yD1FJXLuq3OhGJ94m32c841jK'
+                #original_content_url=ngrok_url + "/image/hi.jpg",
+                #preview_image_url=ngrok_url + "/image/hi.jpg"
+            ),
+            TextSendMessage(text=reply_text),
+            FlexSendMessage(
+                alt_text='群組功能',
+                contents=flex_message
+            )
+        ]
     )
 
 
@@ -217,34 +281,33 @@ def alert():
     while lf.get_alert_time_user():
 
         alert_id, audio_id = lf.get_alert_time_user()
-        # print(user_id)
 
         try:
             for i in alert_id:
-                line_bot_api.push_message(i, TextSendMessage(text='記得每天記帳呦!'))
+                x = 1
+                # line_bot_api.push_message(i, TextSendMessage(text='記得每天記帳呦!'))
                 # break
             # break
             for i in audio_id:
 
                 mess = "你還有{}筆語音還沒紀錄".format(
                     lf.return_alert_data()[i]["audio"])
-                line_bot_api.push_message(i, TemplateSendMessage(
-                                          alt_text='Confirm template',
-                                          template=ConfirmTemplate(
-                                              text=mess,
-                                              actions=[
-                                                  MessageAction(
-                                                      label='已經記了',
-                                                      text='已經記了'
-                                                  ),
-                                                  MessageAction(
-                                                      label='等等再說',
-                                                      text='等等再說'
-                                                  )
-                                              ]
-                                          )
-                                          ))
-                break
+                # line_bot_api.push_message(i, TemplateSendMessage(
+                #                           alt_text='Confirm template',
+                #                           template=ConfirmTemplate(
+                #                               text=mess,
+                #                               actions=[
+                #                                   MessageAction(
+                #                                       label='已經記了',
+                #                                       text='已經記了'
+                #                                   ),
+                #                                   MessageAction(
+                #                                       label='等等再說',
+                #                                       text='等等再說'
+                #                                   )
+                #                               ]
+                #                           )
+                #                           ))
             break
         except:
             pass
@@ -252,35 +315,8 @@ def alert():
 
 if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
     sched = BackgroundScheduler()
-    sched.add_job(alert, 'cron', second=59)
+    sched.add_job(alert, 'cron', second=0)
     sched.start()
-
-
-def check():
-    while lf.get_audio_user():
-        now = time.ctime().split(" ")[3][:5]
-        if now == "22:32":
-            user_id = lf.get_audio_user()
-            template_message = lf.setting_check_message()
-            for i in user_id:
-                line_bot_api.push_message(i,
-                                          TemplateSendMessage(
-                                              alt_text='Confirm template',
-                                              template=ConfirmTemplate(
-                                                  text='Are you sure?',
-                                                  actions=[
-                                                      MessageAction(
-                                                          label='已經記了',
-                                                          text='yes'
-                                                      ),
-                                                      MessageAction(
-                                                          label='等等再說',
-                                                          text='no'
-                                                      )
-                                                  ]
-                                              )
-                                          ))
-    time.sleep(59)
 
 
 if __name__ == "__main__":

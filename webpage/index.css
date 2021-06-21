@@ -60,6 +60,42 @@ p {
     margin-right: auto;
 }
 
+#login-user-container{
+    position: relative;
+    display: block;
+    top: calc(30.73vh + 123px);
+    height: 30%;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+#login-user-flex{
+    position: absolute;
+    display: flex;
+
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    overflow-y: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+}
+#login-user-flex .user-name-container{
+    margin: 4px;
+    background-color: #F5F4EF;
+}
+
+#login-user-flex .user-name-container .user-name{
+    color: #6F6F6F;
+}
+
+
 #eng-title{
     position: absolute;
     width: 100%;

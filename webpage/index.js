@@ -1,17 +1,58 @@
-//get groupId
-// const queryString = window.location.search;
-// const urlParams = new URLSearchParams(queryString);
-// const groupId = urlParams.get('groupId');
-// const userId = urlParams.get('userId');
+//get groupID
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const groupID = urlParams.get('groupId');
+// const userID = urlParams.get('userID');
 // const userName = urlParams.get('userName');
 
-// console.log(groupId);
-// console.log(userId);
+console.log(groupID);
+// console.log(userID);
 // console.log(userName);
 
+$(document).ready(function () {
+    $.get('./group_data.json', function (json) {
+        group = json[groupID];
+        user_list = group["user_list"]
+
+        $.each(user_list, function (key, val) {
+            $(`<div class=\"user-name-container ${key}\">`).appendTo('#login-user-flex, #share-user-flex');
+            var txt = ""
+            txt += `<p class=\"user-name\">${val["user_name"]}</p>`
+            txt += "</div>"
+
+            $(`.${key}`).html(txt);
+        });
+
+    });
+});
+
+$('#login-user-flex').on("click", ".user-name-container", function () {
+    if (!$(this).hasClass('login-user')) {
+        $('#login-user-flex .user-name-container').removeClass('login-user');
+        $('#login-user-flex .user-name-container').children('p').css('color', '#6F6F6F');
+        $('#login-user-flex .user-name-container').css('background-color', '#F5F4EF');
+        $(this).toggleClass('login-user');
+        $(this).children('p').css('color', '#000000DE');
+        $(this).css('background-color', '#EADAA6');
+    }
+    else if ($(this).hasClass('login-user')) {
+        $(this).removeClass('login-user');
+        $(this).children('p').css('color', '#6F6F6F');
+        $(this).css('background-color', '#F5F4EF');
+    }
+})
+
 $('#welcome-btn').click(function () {
-    $('#front-cover').css("display", "none");
-    $('#info-page').fadeIn(500);
+    if ($('#login-user-flex .user-name-container').hasClass('login-user')) {
+        $('#front-cover').css("display", "none");
+        $('#info-page').fadeIn(500);
+
+        $('#login-user-flex .user-name-container').hasClass('login-user')
+
+        $('.login-user').clone().appendTo('#pay-user-flex');
+
+        $('.acc-name').html(`${$('.login-user p').html()}'S ACCOUNTS`);
+    }
 })
 
 $('#detail-btn').click(function () {
@@ -68,7 +109,7 @@ $('#add-pg-back-btn').click(function () {
     $('#add-content').css("display", "block");
     $('#add-content').animate({ 'left': '0vw' });
     $('#share-content').animate({ 'left': '100vw' }, 500, function () { $('#share-content').css('display', 'none'); })
-    $('#save-btn-inact, #add-pg-back-btn').fadeOut(500);
+    $('#save-btn-inact, #add-pg-back-btn, #save-btn-act').fadeOut(500);
     $('#next-btn').fadeIn(500);
 })
 
@@ -86,14 +127,15 @@ $('#category-flex div').click(function () {
     }
 })
 
-$('#share-user-flex .user-name-container').click(function () {
+$('#share-user-flex').on("click", ".user-name-container", function () {
     var userName = $(this).children('p').html();
+    var userID = $(this).attr('class').split(' ')[1];
     if (!$(this).hasClass('selected')) {
         $(this).toggleClass('selected');
         $(this).children('p').css('color', '#000000DE');
         $(this).css('background-color', '#EADAA6');
 
-        $(`<div class=\"edit-share-user\" id=${userName}>`).appendTo('#edit-share-user-container');
+        $(`<div class=\"edit-share-user ${userID}\" id=${userName}>`).appendTo('#edit-share-user-container');
         var txt = ""
 
         txt += "<div id=\"edit-share-user-name\">";
@@ -108,6 +150,10 @@ $('#share-user-flex .user-name-container').click(function () {
         txt += "</div>"
 
         $(`#${userName}`).html(txt);
+
+        $('#save-btn-inact').css('display', 'none');
+        $('#save-btn-act').css('display', 'block');
+
     }
     else if ($(this).hasClass('selected')) {
         $(this).removeClass('selected');
@@ -116,6 +162,14 @@ $('#share-user-flex .user-name-container').click(function () {
         $(`#edit-share-user-container #${userName}`).remove();
     }
 
+    if ($('#edit-share-user-container').children().length > 0) {
+        $('#save-btn-inact').css('display', 'none');
+        $('#save-btn-act').css('display', 'block');
+    }
+    else {
+        $('#save-btn-inact').css('display', 'block');
+        $('#save-btn-act').css('display', 'none');
+    }
     calculateShare();
 })
 
@@ -133,6 +187,52 @@ function calculateShare() {
         }
     }
 }
+
+$('#save-btn-act').click(function () {
+
+    save_json = {
+        "host": $('.login-user').attr('class').split(' ')[1],
+        "category": $('.select-cate').attr('id'),
+        "items": $('#add-items input').val(),
+        "price": $('#add-price input').val(),
+        "share": {}
+    }
+
+    $('#edit-share-user-container').children().each(function () {
+        var userID = $(this).attr('class').split(' ')[1];
+        save_json["share"][userID] = $(this).find('input').val();
+    });
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    today = mm + '/' + dd;
+
+    console.log(save_json)
+
+    $.ajax({
+        url: './save_record',
+        type: "POST",
+        data: JSON.stringify({
+            groupID: groupID,
+            date: today,
+            save_json: save_json
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function () {
+            console.log("success")
+        }
+    })
+
+    // $.post('./save_record', {
+    //     date: today,
+    //     save_json: JSON.stringify(save_json, null, '\t')
+    // });
+    // , (comment_id) => {
+    //     resolve(comment_id);
+    // });
+})
 
 
 
