@@ -22,6 +22,7 @@ from flask import Flask, request, abort, send_file
 # line bot api reference: https://github.com/line/line-bot-sdk-python
 
 app = Flask(__name__, static_folder='/')  # 建立 Flask 物件
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -30,7 +31,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://03daf4163d32.ngrok.io'
+ngrok_url = 'https://91fad31cbb9a.ngrok.io'
 
 
 # 載入richmenu
@@ -61,6 +62,8 @@ def save_record():
     group_id = body["groupID"]
     date = body["date"]
     host = body["save_json"]["host"]
+    share = body["save_json"]["share"]
+
     with open("./webpage/group_data.json", "r", encoding='utf-8') as f:
         data = json.load(f)
 
@@ -73,17 +76,29 @@ def save_record():
         abort(400)
 
     if date not in data[group_id]["history"]:
-        data[group_id]["history"][date] = {}
+        data[group_id]["history"][date] = {
+        }
 
     date_record_num = len(data[group_id]["history"][date].keys()) + 1
 
     data[group_id]["history"][date].update(
         {date_record_num: body["save_json"]})
 
+    for share_user, price in share.items():
+        try:
+            data[group_id]["user_list"][host]["debts"][share_user] += int(
+                price)
+            data[group_id]["user_list"][share_user]["debts"][host] -= int(
+                price)
+        except:
+            data[group_id]["user_list"][host]["debts"][share_user] = int(price)
+            data[group_id]["user_list"][share_user]["debts"][host] = - \
+                int(price)
+
     with open("./webpage/group_data.json", "w", encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-    return 'save'
+    return json.dumps({'success': True, 'data': data[group_id]}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/callback", methods=['POST'])  # 路由

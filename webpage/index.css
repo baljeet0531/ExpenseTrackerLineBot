@@ -297,6 +297,7 @@ p {
     position: relative;
     left: 0;
     margin-right: 11px;
+    white-space: nowrap;
 }
 #group-history .user-name-container {
     position: absolute;
@@ -877,5 +878,24 @@ p {
     background-color: #F7F7FA;
 }
 
+#saveing-blur {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#saveing-blur p{
+    display: block;
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    line-height: 100vh;
+    color: #FFFFFF;
+}
 
 

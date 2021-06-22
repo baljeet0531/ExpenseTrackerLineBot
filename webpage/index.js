@@ -10,9 +10,13 @@ console.log(groupID);
 // console.log(userName);
 
 $(document).ready(function () {
+    $.when(loadUserList()).then(loadGroupHistory());
+});
+
+function loadUserList() {
     $.get('./group_data.json', function (json) {
         group = json[groupID];
-        user_list = group["user_list"]
+        user_list = group["user_list"];
 
         $.each(user_list, function (key, val) {
             $(`<div class=\"user-name-container ${key}\">`).appendTo('#login-user-flex, #share-user-flex');
@@ -22,9 +26,109 @@ $(document).ready(function () {
 
             $(`.${key}`).html(txt);
         });
-
     });
-});
+}
+
+function loadGroupHistory() {
+    $.get('./group_data.json', function (json) {
+        group = json[groupID];
+        group_history = group["history"];
+        console.log(group_history);
+        prependGroupHistory(group_history);
+    });
+
+}
+function prependGroupHistory(group_history) {
+    $('#group-history').empty();
+    $.each(group_history, function (date, dateRecord) {
+        $(`<div class=\"date-record ${date}\"></div>`).prependTo('#group-history');
+        $.each(dateRecord, function (index, recordInfo) {
+            $(`<div class=\"record-info\" id=\"${date}_${index}\">`).prependTo(`.${date}`);
+
+            var category = recordInfo["category"];
+            var items = recordInfo["items"];
+            var host = recordInfo["host"];
+            var host_name = $(`.${host} p`).html();
+            var price = recordInfo["price"];
+
+            var txt = ""
+            txt += `<img class=\"category-icon\" src=\"../image/${category}.png\">`
+            txt += "<div class=\"right-border\"></div>"
+            txt += "<div class=\"user-name-container\">"
+            txt += `<p class=\"user-name\">${host_name}</p>`
+            txt += "</div>"
+            txt += `<p class=\"item-name\">${items}</p>`
+            txt += `<p class=\"total-cost\">${price} twd</p>`
+            txt += "</div>"
+
+            $(`#${date}_${index}`).html(txt);
+        });
+        $(`<p class=\"date\">${date}</p>`).prependTo(`.${date}`);
+    });
+
+}
+function appendDebts(user_list) {
+    $('#paid .user-list-container').empty();
+    $('#paid-container .d-list-container').empty();
+    $('#payback .user-list-container').empty();
+    $('#payback-container .d-list-container').empty();
+
+    login_user_id = $('.login-user').attr('class').split(' ')[1]
+    login_user_name = user_list[login_user_id]["user_name"]
+    login_user_debts = user_list[login_user_id]["debts"]
+
+    total_debts = 0
+    $.each(login_user_debts, function (user_id, price) {
+        if (user_id != login_user_id) {
+            total_debts += price
+            if (price > 0) {
+                $(`<div class=\"user-name-container ${user_id}\">`).appendTo('#paid .user-list-container');
+                var txt = ""
+                txt += `<p class=\"user-name\">${user_list[user_id]["user_name"]}</p>`
+                txt += "</div>"
+
+                $(`#paid .user-list-container .${user_id}`).html(txt);
+
+                $(`<div class=\"interact-user-container ${user_id}\">`).appendTo('#paid-container .d-list-container');
+
+                txt = ""
+                txt += "<div class=\"user-name-container\">"
+                txt += `<p class="user-name">${user_list[user_id]["user_name"]}</p>`
+                txt += "</div>"
+                txt += `<p class="total-cost">${price} twd</p>`
+                txt += "<img class=\"interact-btn payback-btn\" src=\"../image/received-btn.png\">"
+                txt += "</div>"
+                $(`#paid-container .d-list-container .${user_id}`).html(txt);
+            }
+            else if (price < 0) {
+                $(`<div class=\"user-name-container ${user_id}\">`).appendTo('#payback .user-list-container');
+                var txt = ""
+                txt += `<p class=\"user-name\">${user_list[user_id]["user_name"]}</p>`
+                txt += "</div>"
+                $(`#payback .user-list-container .${user_id}`).html(txt);
+
+                $(`<div class=\"interact-user-container ${user_id}\">`).appendTo('#payback-container .d-list-container');
+                txt = ""
+                txt += "<div class=\"user-name-container\">"
+                txt += `<p class="user-name">${user_list[user_id]["user_name"]}</p>`
+                txt += "</div>"
+                txt += `<p class="total-cost">${price} twd</p>`
+                txt += "<img class=\"interact-btn payback-btn\" src=\"../image/payback-btn.png\">"
+                txt += "</div>"
+                $(`#payback-container .d-list-container .${user_id}`).html(txt);
+            }
+        }
+    });
+    $('.acc-debts').html(`TOTAL DEBTS: ${total_debts}`);
+}
+
+function loadDebts() {
+    $.get('./group_data.json', function (json) {
+        group = json[groupID];
+        user_list = group["user_list"];
+        appendDebts(user_list);
+    });
+}
 
 $('#login-user-flex').on("click", ".user-name-container", function () {
     if (!$(this).hasClass('login-user')) {
@@ -52,6 +156,7 @@ $('#welcome-btn').click(function () {
         $('.login-user').clone().appendTo('#pay-user-flex');
 
         $('.acc-name').html(`${$('.login-user p').html()}'S ACCOUNTS`);
+        loadDebts();
     }
 })
 
@@ -87,6 +192,13 @@ $('#add-btn').click(function () {
 })
 
 $('#close-btn').click(function () {
+    $('.selected').click();
+    $('#add-pg-back-btn').click();
+    $('.select-cate').click();
+    $('#add-items input').val('');
+    $('#add-price input').val('');
+
+    $('#saveing-blur').css('display', 'none');
     $('#main-page').css('display', 'block');
     $('#add-page').fadeOut(500);
 })
@@ -189,6 +301,7 @@ function calculateShare() {
 }
 
 $('#save-btn-act').click(function () {
+    $('#saveing-blur').css('display', 'block');
 
     save_json = {
         "host": $('.login-user').attr('class').split(' ')[1],
@@ -206,7 +319,7 @@ $('#save-btn-act').click(function () {
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    today = mm + '/' + dd;
+    today = mm + '-' + dd;
 
     console.log(save_json)
 
@@ -220,18 +333,22 @@ $('#save-btn-act').click(function () {
         }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
-        success: function () {
+        success: function (group_json) {
+            $('#close-btn').click();
             console.log("success")
+            console.log(group_json);
+            group_history = group_json["data"]["history"];
+            user_list = group_json["data"]["user_list"];
+
+            prependGroupHistory(group_history);
+            appendDebts(user_list);
+        },
+        error: function () {
+            console.log("error");
+            $('#saveing-blur').css('display', 'none');
         }
     })
 
-    // $.post('./save_record', {
-    //     date: today,
-    //     save_json: JSON.stringify(save_json, null, '\t')
-    // });
-    // , (comment_id) => {
-    //     resolve(comment_id);
-    // });
 })
 
 

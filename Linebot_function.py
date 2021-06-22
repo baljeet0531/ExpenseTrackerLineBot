@@ -83,16 +83,19 @@ def register_to_group_data(group_id, user_id, user_name):
     if group_id not in data:
         data[group_id] = {
             "user_list": {
+            },
+            "history": {
             }
         }
 
     if user_id not in data[group_id]["user_list"]:
         data[group_id]["user_list"][user_id] = {
-            'user_name': user_name
+            'user_name': user_name,
+            "debts": {}
         }
         reply = user_name + "成功註冊"
     else:
-        reply = "已註冊過"
+        reply = user_name + "已註冊過"
 
     with open("./webpage/group_data.json", "w", encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
