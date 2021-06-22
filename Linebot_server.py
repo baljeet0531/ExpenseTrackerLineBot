@@ -28,7 +28,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://0044b08e246f.ngrok.io'
+ngrok_url = 'https://0e665e4ca977.ngrok.io'
 
 
 # 載入richmenu
@@ -95,27 +95,38 @@ def handle_message(event):
     text = event.message.text
 
     if text == "記帳推薦":
-
+        recommend_message = lf.setting_recommend_message()
+        line_bot_api.reply_message(
+            event.reply_token,
+            FlexSendMessage(
+                alt_text="記帳推薦",
+                contents=recommend_message))
+    elif text == "記帳推薦!":
         muilt_reply = []
         muilt_reply.append(TextSendMessage
                            (text="以下為您的ID以及推薦你適合記帳程式的連結。\n進入連結後請在第一題填入我們提供的ID進行，謝謝！"))
         muilt_reply.append(TextSendMessage(text=event.source.user_id))
-        muilt_reply.append(TextSendMessage(
-            text='https://forms.gle/9i3bmXM6QXJv3gpV8'))
-        response = line_bot_api.reply_message(
+        muilt_reply.append(TextSendMessage(text='https://forms.gle/9i3bmXM6QXJv3gpV8'))
+        line_bot_api.reply_message(
             event.reply_token, muilt_reply)
 
-    elif text == "記帳推薦結果":
+    elif text == "推薦結果":
+        app_recommend.run_new_json()   #此步驟是先讓問卷json檔有新的資料
         with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
             q_d = json.load(object)
 
-        if q_d[event.source.user_id] == event.source.user_id:  # 這句有問題
-            app = app_recommend.systems(event.source.user_id)
-            response = line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(
-                    text="我會推薦你" + app + "去紀錄帳目"))
+        if event.source.user_id in q_d:
+            app = app_recommend.judgement(event.source.user_id)
+            system = q_d[event.source.user_id]["你的手機系統?"]
+            with open('app_download_url.json', 'r', encoding='utf-8') as object:
+                a_d_u = json.load(object)
+            muilt_reply = []
+            muilt_reply.append(TextSendMessage(text="我會推薦你用「" + app + "」去紀錄帳目"))
+            muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
+            line_bot_api.reply_message(
+                event.reply_token, muilt_reply)
         else:
-            response = line_bot_api.reply_message(
+            line_bot_api.reply_message(
                 event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
 
     elif text == "記帳提醒":

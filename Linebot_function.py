@@ -16,10 +16,14 @@ def setting_check_message():
     template_message = json.load(
         open('./template_message/check.json', 'r', encoding='utf-8'))
     return template_message
+def setting_recommend_message():
+    recommend_message = json.load(
+        open('./flex_message/recommend.json', 'r', encoding='utf-8'))
+    return recommend_message
 
 def alert_data(user_id):
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
-        data= json.load(f, strict=False)
+        data = json.load(f, strict=False)
     if user_id not in data:
         data[user_id]= {
             "time":"tm",
