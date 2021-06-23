@@ -128,6 +128,21 @@ def handle_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
+    elif text == "想換記帳程式":
+        with open('user_recommend_data.json', 'r', encoding='utf-8') as object:
+            u_r_d = json.load(object)
+        del u_r_d[event.source.user_id][app_recommend.total(event.source.user_id)]
+        with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
+            q_d = json.load(object)
+        app = app_recommend.total(u_r_d)
+        system = q_d[event.source.user_id]["你的手機系統?"]
+        with open('app_download_url.json', 'r', encoding='utf-8') as object:
+            a_d_u = json.load(object)
+        muilt_reply = []
+        muilt_reply.append(TextSendMessage(text="試試「" + app + "」去紀錄帳目如何？"))
+        muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
+        line_bot_api.reply_message(
+            event.reply_token, muilt_reply)
 
     elif text == "記帳提醒":
         flex_message = lf.setting_alert_message()

@@ -60,6 +60,42 @@ p {
     margin-right: auto;
 }
 
+#login-user-container{
+    position: relative;
+    display: block;
+    top: calc(30.73vh + 123px);
+    height: 30%;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+#login-user-flex{
+    position: absolute;
+    display: flex;
+
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    overflow-y: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+}
+#login-user-flex .user-name-container{
+    margin: 4px;
+    background-color: #F5F4EF;
+}
+
+#login-user-flex .user-name-container .user-name{
+    color: #6F6F6F;
+}
+
+
 #eng-title{
     position: absolute;
     width: 100%;
@@ -261,6 +297,7 @@ p {
     position: relative;
     left: 0;
     margin-right: 11px;
+    white-space: nowrap;
 }
 #group-history .user-name-container {
     position: absolute;
@@ -841,5 +878,24 @@ p {
     background-color: #F7F7FA;
 }
 
+#saveing-blur {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#saveing-blur p{
+    display: block;
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    line-height: 100vh;
+    color: #FFFFFF;
+}
 
 
