@@ -204,6 +204,8 @@ def handle_message(event):
 
     elif text == "已經記了":
         lf.enter_alert_audio_data(event.source.user_id, "0")
+    elif text=="取消提醒":
+        lf.cancel_alert(event.source.user_id)
     else:
         return
 
@@ -245,7 +247,10 @@ def alert():
 
         try:
             for i in alert_id:
-                line_bot_api.push_message(i, TextSendMessage(text='記得每天記帳呦!'))
+                flex_message = lf.setting_check_message()
+                line_bot_api.push_message(i, FlexSendMessage(
+                    alt_text='記得每天記帳喲~',
+                    contents=flex_message))
                 # break
             # break
             for i in audio_id:
@@ -253,7 +258,7 @@ def alert():
                 mess = "你還有{}筆語音還沒紀錄".format(
                     lf.return_alert_data()[i]["audio"])
                 line_bot_api.push_message(i, TemplateSendMessage(
-                                          alt_text='Confirm template',
+                                          alt_text=mess,
                                           template=ConfirmTemplate(
                                               text=mess,
                                               actions=[
@@ -276,35 +281,11 @@ def alert():
 
 if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
     sched = BackgroundScheduler()
-    sched.add_job(alert, 'cron', second=59)
+    sched.add_job(alert, 'cron', second=0)
     sched.start()
 
 
-def check():
-    while lf.get_audio_user():
-        now = time.ctime().split(" ")[3][:5]
-        if now == "22:32":
-            user_id = lf.get_audio_user()
-            template_message = lf.setting_check_message()
-            for i in user_id:
-                line_bot_api.push_message(i,
-                                          TemplateSendMessage(
-                                              alt_text='Confirm template',
-                                              template=ConfirmTemplate(
-                                                  text='Are you sure?',
-                                                  actions=[
-                                                      MessageAction(
-                                                          label='已經記了',
-                                                          text='yes'
-                                                      ),
-                                                      MessageAction(
-                                                          label='等等再說',
-                                                          text='no'
-                                                      )
-                                                  ]
-                                              )
-                                          ))
-    time.sleep(59)
+
 
 
 if __name__ == "__main__":
