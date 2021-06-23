@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from linebot.models.responses import Group
 import Linebot_function as lf  # import自己寫的linebot功能
 from threading import Timer
 from bs4 import BeautifulSoup
@@ -11,7 +10,6 @@ import requests
 import os
 import json
 import configparser
-import urllib
 from linebot.models import *
 from linebot.exceptions import InvalidSignatureError
 from linebot import LineBotApi, WebhookHandler
@@ -22,7 +20,6 @@ from flask import Flask, request, abort, send_file
 # line bot api reference: https://github.com/line/line-bot-sdk-python
 
 app = Flask(__name__, static_folder='/')  # 建立 Flask 物件
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -31,7 +28,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://91fad31cbb9a.ngrok.io'
+ngrok_url = 'https://0e665e4ca977.ngrok.io'
 
 
 # 載入richmenu
@@ -54,51 +51,6 @@ def richmenu():
             'POST', 'https://api.line.me/v2/bot/user/all/richmenu/' + a, headers=headers)
     except:
         pass
-
-
-@app.route("/webpage/save_record", methods=['POST'])
-def save_record():
-    body = request.get_json()
-    group_id = body["groupID"]
-    date = body["date"]
-    host = body["save_json"]["host"]
-    share = body["save_json"]["share"]
-
-    with open("./webpage/group_data.json", "r", encoding='utf-8') as f:
-        data = json.load(f)
-
-    if group_id not in data:
-        print("no group record")
-        abort(400)
-
-    if host not in data[group_id]["user_list"]:
-        print("invalid host")
-        abort(400)
-
-    if date not in data[group_id]["history"]:
-        data[group_id]["history"][date] = {
-        }
-
-    date_record_num = len(data[group_id]["history"][date].keys()) + 1
-
-    data[group_id]["history"][date].update(
-        {date_record_num: body["save_json"]})
-
-    for share_user, price in share.items():
-        try:
-            data[group_id]["user_list"][host]["debts"][share_user] += int(
-                price)
-            data[group_id]["user_list"][share_user]["debts"][host] -= int(
-                price)
-        except:
-            data[group_id]["user_list"][host]["debts"][share_user] = int(price)
-            data[group_id]["user_list"][share_user]["debts"][host] = - \
-                int(price)
-
-    with open("./webpage/group_data.json", "w", encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-
-    return json.dumps({'success': True, 'data': data[group_id]}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/callback", methods=['POST'])  # 路由
@@ -126,6 +78,7 @@ def callback():
 def handle_message(event):
     print(event)
     a = lf.return_alert_data()[event.source.user_id]["audio"]
+    print(a)
     if event.source.type == 'user':
         a = int(a)+1
         lf.enter_alert_audio_data(event.source.user_id, str(a))
@@ -140,28 +93,54 @@ def handle_message(event):
     text = event.message.text
 
     if text == "記帳推薦":
-
+        recommend_message = lf.setting_recommend_message()
+        line_bot_api.reply_message(
+            event.reply_token,
+            FlexSendMessage(
+                alt_text="記帳推薦",
+                contents=recommend_message))
+    elif text == "記帳推薦!":
         muilt_reply = []
         muilt_reply.append(TextSendMessage
                            (text="以下為您的ID以及推薦你適合記帳程式的連結。\n進入連結後請在第一題填入我們提供的ID進行，謝謝！"))
         muilt_reply.append(TextSendMessage(text=event.source.user_id))
-        muilt_reply.append(TextSendMessage(
-            text='https://forms.gle/9i3bmXM6QXJv3gpV8'))
-        response = line_bot_api.reply_message(
+        muilt_reply.append(TextSendMessage(text='https://forms.gle/9i3bmXM6QXJv3gpV8'))
+        line_bot_api.reply_message(
             event.reply_token, muilt_reply)
 
-    elif text == "記帳推薦結果":
+    elif text == "推薦結果":
+        app_recommend.run_new_json()   #此步驟是先讓問卷json檔有新的資料
         with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
             q_d = json.load(object)
 
-        if q_d[event.source.user_id] == event.source.user_id:  # 這句有問題
-            app = app_recommend.systems(event.source.user_id)
-            response = line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(
-                    text="我會推薦你" + app + "去紀錄帳目"))
+        if event.source.user_id in q_d:
+            app = app_recommend.judgement(event.source.user_id)
+            system = q_d[event.source.user_id]["你的手機系統?"]
+            with open('app_download_url.json', 'r', encoding='utf-8') as object:
+                a_d_u = json.load(object)
+            muilt_reply = []
+            muilt_reply.append(TextSendMessage(text="我會推薦你用「" + app + "」去紀錄帳目"))
+            muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
+            line_bot_api.reply_message(
+                event.reply_token, muilt_reply)
         else:
-            response = line_bot_api.reply_message(
+            line_bot_api.reply_message(
                 event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
+    elif text == "想換記帳程式":
+        with open('user_recommend_data.json', 'r', encoding='utf-8') as object:
+            u_r_d = json.load(object)
+        del u_r_d[event.source.user_id][app_recommend.total(event.source.user_id)]
+        with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
+            q_d = json.load(object)
+        app = app_recommend.total(u_r_d)
+        system = q_d[event.source.user_id]["你的手機系統?"]
+        with open('app_download_url.json', 'r', encoding='utf-8') as object:
+            a_d_u = json.load(object)
+        muilt_reply = []
+        muilt_reply.append(TextSendMessage(text="試試「" + app + "」去紀錄帳目如何？"))
+        muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
+        line_bot_api.reply_message(
+            event.reply_token, muilt_reply)
 
     elif text == "記帳提醒":
         flex_message = lf.setting_alert_message()
@@ -194,15 +173,12 @@ def handle_message(event):
             profile = line_bot_api.get_profile(user_id)
             user_name = profile.display_name
 
-            # uri encode
-            params = {'groupId': group_id}
-
             # set flex message
             flex_message = lf.setting_flex_message()
             # set action uri of flex message
-            flex_message["footer"]["contents"][2]["action"]["uri"] = ngrok_url + \
-                '/webpage/index.html?' + \
-                urllib.parse.urlencode(params) + '&v=1'
+            flex_message["footer"]["contents"][0]["action"]["uri"] = ngrok_url + \
+                '/webpage/index.html?groupId=' + group_id + \
+                '&userId=' + user_id + '&userName=' + user_name
             # send flex message to user
             line_bot_api.reply_message(
                 event.reply_token,
@@ -236,23 +212,14 @@ def handle_message(event):
 
 @ handler.add(PostbackEvent)
 def handle_postback(event):
+    print(event)
     postback = event.postback.data
+    time = event.postback.params
 
     if postback == "time":
-        time = event.postback.params
         reply = "設定成功!將於每日"+time["time"]+"提醒你記帳!"
         lf.enter_alert_time_data(
             user_id=event.source.user_id, tm=time["time"],)
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=reply))
-    elif postback == "開始使用":
-        group_id = event.source.group_id
-        user_id = event.source.user_id
-        user_name = line_bot_api.get_profile(
-            user_id).display_name
-
-        reply = lf.register_to_group_data(group_id, user_id, user_name)
-
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=reply))
 
@@ -260,33 +227,13 @@ def handle_postback(event):
 # 收到join event
 @ handler.add(JoinEvent)
 def handle_join(event):
-
-    reply_text = "大家好~我是你們的記帳幫手，在群組中可以替大家完成分帳的任務喔!!\n記得先點選\"開始使用\"在網頁中才看的到妳的名字呦!!"
-
-    # uri encode
-    params = {'groupId': event.source.group_id}
-
-    # set flex message
-    flex_message = lf.setting_flex_message()
-    # set action uri of flex message
-    flex_message["footer"]["contents"][2]["action"]["uri"] = ngrok_url + \
-        '/webpage/index.html?' + urllib.parse.urlencode(params)
-    # reply message
+    print(event)
+    # reply image message
     line_bot_api.reply_message(
-        event.reply_token,
-        [
-            ImageSendMessage(
-                original_content_url='https://drive.google.com/uc?id=1BoKk4P5yD1FJXLuq3OhGJ94m32c841jK',
-                preview_image_url='https://drive.google.com/uc?id=1BoKk4P5yD1FJXLuq3OhGJ94m32c841jK'
-                #original_content_url=ngrok_url + "/image/hi.jpg",
-                #preview_image_url=ngrok_url + "/image/hi.jpg"
-            ),
-            TextSendMessage(text=reply_text),
-            FlexSendMessage(
-                alt_text='群組功能',
-                contents=flex_message
-            )
-        ]
+        event.reply_token, ImageSendMessage(
+            original_content_url=ngrok_url + "/image/hi.jpg",
+            preview_image_url=ngrok_url + "/image/hi.jpg"
+        )
     )
 
 
@@ -294,33 +241,34 @@ def alert():
     while lf.get_alert_time_user():
 
         alert_id, audio_id = lf.get_alert_time_user()
+        # print(user_id)
 
         try:
             for i in alert_id:
-                x = 1
-                # line_bot_api.push_message(i, TextSendMessage(text='記得每天記帳呦!'))
+                line_bot_api.push_message(i, TextSendMessage(text='記得每天記帳呦!'))
                 # break
             # break
             for i in audio_id:
 
                 mess = "你還有{}筆語音還沒紀錄".format(
                     lf.return_alert_data()[i]["audio"])
-                # line_bot_api.push_message(i, TemplateSendMessage(
-                #                           alt_text='Confirm template',
-                #                           template=ConfirmTemplate(
-                #                               text=mess,
-                #                               actions=[
-                #                                   MessageAction(
-                #                                       label='已經記了',
-                #                                       text='已經記了'
-                #                                   ),
-                #                                   MessageAction(
-                #                                       label='等等再說',
-                #                                       text='等等再說'
-                #                                   )
-                #                               ]
-                #                           )
-                #                           ))
+                line_bot_api.push_message(i, TemplateSendMessage(
+                                          alt_text='Confirm template',
+                                          template=ConfirmTemplate(
+                                              text=mess,
+                                              actions=[
+                                                  MessageAction(
+                                                      label='已經記了',
+                                                      text='已經記了'
+                                                  ),
+                                                  MessageAction(
+                                                      label='等等再說',
+                                                      text='等等再說'
+                                                  )
+                                              ]
+                                          )
+                                          ))
+                break
             break
         except:
             pass
@@ -328,8 +276,35 @@ def alert():
 
 if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
     sched = BackgroundScheduler()
-    sched.add_job(alert, 'cron', second=0)
+    sched.add_job(alert, 'cron', second=59)
     sched.start()
+
+
+def check():
+    while lf.get_audio_user():
+        now = time.ctime().split(" ")[3][:5]
+        if now == "22:32":
+            user_id = lf.get_audio_user()
+            template_message = lf.setting_check_message()
+            for i in user_id:
+                line_bot_api.push_message(i,
+                                          TemplateSendMessage(
+                                              alt_text='Confirm template',
+                                              template=ConfirmTemplate(
+                                                  text='Are you sure?',
+                                                  actions=[
+                                                      MessageAction(
+                                                          label='已經記了',
+                                                          text='yes'
+                                                      ),
+                                                      MessageAction(
+                                                          label='等等再說',
+                                                          text='no'
+                                                      )
+                                                  ]
+                                              )
+                                          ))
+    time.sleep(59)
 
 
 if __name__ == "__main__":
