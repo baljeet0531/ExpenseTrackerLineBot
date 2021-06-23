@@ -383,39 +383,38 @@ $('.cancel-btn').click(function () {
 
 $('.confirm-btn').click(function () {
     if ($('#payback-describe-container').css('display') != 'none') {
-        $.ajax({
-            url: './save_record',
-            type: "POST",
-            data: JSON.stringify({
-                groupID: groupID,
-                date: today,
-                save_json: save_json
-            }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (group_json) {
-                paybackName = $('#payback-describe-container .user-name').html();
-                paybackMoney = $('#payback-describe-container input').val();
-                $('#share-container input').val(`${paybackName}我還你${paybackMoney}元了喔~`);
-                $('#payback-describe-container').fadeOut(500);
-                $('#share-container').fadeIn(500);
-
-                $('#close-btn').click();
-                console.log("success")
-                console.log(group_json);
-                group_history = group_json["data"]["history"];
-                user_list = group_json["data"]["user_list"];
-
-                prependGroupHistory(group_history);
-                appendDebts(user_list);
-            },
-            error: function () {
-                console.log("error");
-                $('#saveing-blur').css('display', 'none');
-            }
-        })
+        paybackName = $('#payback-describe-container .user-name').html();
+        paybackMoney = $('#payback-describe-container input').val();
+        $('#share-container input').val(`${paybackName}我還你${paybackMoney}元了喔~`);
+        $('#payback-describe-container').fadeOut(500);
+        $('#share-container').fadeIn(500);
+        // $.ajax({
+        //     url: './save_record',
+        //     type: "POST",
+        //     data: JSON.stringify({
+        //         groupID: groupID,
+        //         date: today,
+        //         save_json: save_json
+        //     }),
+        //     contentType: "application/json; charset=utf-8",
+        //     dataType: "json",
+        //     success: function (group_json) {
 
 
+        //         $('#close-btn').click();
+        //         console.log("success")
+        //         console.log(group_json);
+        //         group_history = group_json["data"]["history"];
+        //         user_list = group_json["data"]["user_list"];
+
+        //         prependGroupHistory(group_history);
+        //         appendDebts(user_list);
+        //     },
+        //     error: function () {
+        //         console.log("error");
+        //         $('#saveing-blur').css('display', 'none');
+        //     }
+        // })
     }
     else if ($('#share-container').css('display') != 'none') {
         shareText = $('#share-container input').val();

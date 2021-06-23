@@ -5,8 +5,8 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-def run_new_json():
 
+def run_new_json():
 
     url = 'https://docs.google.com/spreadsheets/d/1IfDb9SmmOMtcOaGvBZDLDzKLMLUOpEUXdmuR4-GUCng/export?format=csv'
     webpage = urllib.request.urlopen(url)
@@ -23,14 +23,18 @@ def run_new_json():
     result = {}  # 創建一個新的dict
     # print(result)
     for i in data:  # 把原本的data這個list一個一個丟進去這個dict中
-        result[i['請填入記帳幫手提供您的ID！']] = i  # 把在data中ID這個key的value作為這次reuslt這個dict中的key
+        # 把在data中ID這個key的value作為這次reuslt這個dict中的key
+        result[i['請填入記帳幫手提供您的ID！']] = i
         del i['請填入記帳幫手提供您的ID！']
     # print(result[id])  #利用stu_id去尋找以上整理出來的dict中符合ID的dict
     with open('questionnaire_data.json', 'w', encoding='utf-8') as object:
         json.dump(result, object, ensure_ascii=False, indent=4)
     return True
 
+
 user_recommend = {}
+
+
 def judgement(id):
     dic1 = {"Ahorro": 0,
             "記帳城市(免費版)": 0,
@@ -65,7 +69,6 @@ def judgement(id):
             del dic1["MOZE3.0(免費版)"]  # 因第一題刪
             del dic1["MOZE3.0(付費版)"]  # 因第一題刪
 
-
         elif q_d[id]["是否會介意付費的記帳程式"] == "NO":
             functionality(q_d[id]["功能性"], dic1)
             conv(q_d[id]["易上手性"], dic1)
@@ -90,7 +93,6 @@ def judgement(id):
             del dic1['CW money(付費版)']  # 因第二題刪
             del dic1['理財幫手 AndroMoney']  # 因第二題刪
 
-
         elif q_d[id]["是否會介意付費的記帳程式"] == "NO":
             functionality(q_d[id]["功能性"], dic1)
             conv(q_d[id]["易上手性"], dic1)
@@ -103,7 +105,6 @@ def judgement(id):
     user_recommend[id] = dic1
     with open('user_recommend_data.json', 'w', encoding='utf-8') as object:
         json.dump(user_recommend, object, ensure_ascii=False, indent=4)
-    print(dic1)
     return total(dic1)
 
 
@@ -185,7 +186,6 @@ def functionality(number, dic1):  # 功能性
         dic1["Spendee Budget & Money Tracker"] += 1
 
 
-
 def conv(number, dic1):  # 易上手性
     if number == "5":
         dic1["簡單記帳"] += 11
@@ -262,7 +262,6 @@ def conv(number, dic1):  # 易上手性
         dic1["記帳城市(免費版)"] += 1.2
         dic1["記帳城市(付費版)"] += 1.2
         dic1["碎碎念記帳"] += 1
-
 
 
 def immediacy(number, dic1):  # 即時性
@@ -365,6 +364,7 @@ def beauty(number, dic1):  # 美觀
         dic1["CW money(免費版)"] += 1
         dic1["CW money(付費版)"] += 1
 
+
 def fun(number, dic1):  # 趣味性
     if number == "5":
         dic1["記帳城市(免費版)"] += 11
@@ -402,13 +402,13 @@ def stop(reason, dic1):
     reasons = reason.replace(' ', '')
     reasons_list = reasons.split(",")
     for res in reasons_list:
-        if res == "忘記花費": #用定位、錄音、拍照去回想（依功能多寡去做加分）
-            dic1["碎碎念記帳"] += 1  #可拍照
-            dic1["CW money(免費版)"] += 2 #可錄音、拍照
+        if res == "忘記花費":  # 用定位、錄音、拍照去回想（依功能多寡去做加分）
+            dic1["碎碎念記帳"] += 1  # 可拍照
+            dic1["CW money(免費版)"] += 2  # 可錄音、拍照
             dic1["CW money(付費版)"] += 2
-            dic1["Spendee Budget & Money Tracker"] += 1 #可定位
-            dic1["記帳雞"] += 2 #可錄音、拍照
-        elif res == "忘記記帳": #用定時提醒去解決，所以有「定時提醒」功能者都會再多加一分
+            dic1["Spendee Budget & Money Tracker"] += 1  # 可定位
+            dic1["記帳雞"] += 2  # 可錄音、拍照
+        elif res == "忘記記帳":  # 用定時提醒去解決，所以有「定時提醒」功能者都會再多加一分
             dic1["CW money(免費版)"] += 1
             dic1["CW money(付費版)"] += 1
             dic1["天天記帳"] += 1
@@ -419,17 +419,17 @@ def stop(reason, dic1):
             dic1["MOZE3.0(免費版)"] += 1
             dic1["MOZE3.0(付費版)"] += 1
             dic1["理財幫手 AndroMoney"] += 1
-        elif res == "忙碌":      #減少記帳時間：利用widget記帳、掃電子發票、常用分類快速選取解決
-            dic1["CW money(免費版)"] += 3 #三功能皆有
-            dic1["CW money(付費版)"] += 3 #三功能皆有
-            dic1["碎碎念記帳"] += 1  #可掃電子發票
-            dic1["MOZE3.0(免費版)"] += 1 #常用分類快速選取
-            dic1["MOZE3.0(付費版)"] += 3 #三功能皆有
-            dic1["Ahorro"] += 1   #可掃電子發票
-            dic1["理財幫手 AndroMoney"] += 1   #可掃電子發票
-            dic1["簡單記帳"] += 1  #常用分類快速選取
-            dic1["記帳城市(免費版)"] += 1  #常用分類快速選取
-            dic1["記帳城市(付費版)"] += 1  #常用分類快速選取
+        elif res == "忙碌":  # 減少記帳時間：利用widget記帳、掃電子發票、常用分類快速選取解決
+            dic1["CW money(免費版)"] += 3  # 三功能皆有
+            dic1["CW money(付費版)"] += 3  # 三功能皆有
+            dic1["碎碎念記帳"] += 1  # 可掃電子發票
+            dic1["MOZE3.0(免費版)"] += 1  # 常用分類快速選取
+            dic1["MOZE3.0(付費版)"] += 3  # 三功能皆有
+            dic1["Ahorro"] += 1  # 可掃電子發票
+            dic1["理財幫手 AndroMoney"] += 1  # 可掃電子發票
+            dic1["簡單記帳"] += 1  # 常用分類快速選取
+            dic1["記帳城市(免費版)"] += 1  # 常用分類快速選取
+            dic1["記帳城市(付費版)"] += 1  # 常用分類快速選取
         elif res == "懶惰":
             dic1["CW money(免費版)"] += 3  # 三功能皆有
             dic1["CW money(付費版)"] += 3  # 三功能皆有
@@ -458,12 +458,12 @@ def habit(reason, dic1):
     reasons = reason.replace(' ', '')
     reasons_list = reasons.split(",")
     for res in reasons_list:
-        if res == "時常會借還錢": #有提醒借還錢功能者加一分 （歸類在功能性的定時提醒？）
+        if res == "時常會借還錢":  # 有提醒借還錢功能者加一分 （歸類在功能性的定時提醒？）
             dic1["MOZE3.0(付費版)"] += 1
             dic1["理財幫手 AndroMoney"] += 1
-        if res == "需要信用卡 or 帳單繳費提醒": #有此功能者加一分 （歸類在功能性的定時提醒？）
+        if res == "需要信用卡 or 帳單繳費提醒":  # 有此功能者加一分 （歸類在功能性的定時提醒？）
             dic1["MOZE3.0(付費版)"] += 1
-        if res == "需要紀錄固定開銷": #有「設定固定開銷」功能者加一分 （已經統計到功能性中）
+        if res == "需要紀錄固定開銷":  # 有「設定固定開銷」功能者加一分 （已經統計到功能性中）
             dic1["天天記帳"] += 1
             dic1["Ahorro"] += 1
             dic1["簡單記帳"] += 1
@@ -471,7 +471,7 @@ def habit(reason, dic1):
             dic1["MOZE3.0(付費版)"] += 1
             dic1["CW money(免費版)"] += 1
             dic1["CW money(付費版)"] += 1
-        if res == "多帳戶管理（錢包、銀行、信用卡等分別紀錄）": #有多帳本功能者加一分 （已經統計到功能性中）
+        if res == "多帳戶管理（錢包、銀行、信用卡等分別紀錄）":  # 有多帳本功能者加一分 （已經統計到功能性中）
             dic1["CW money(免費版)"] += 1
             dic1["CW money(付費版)"] += 1
             dic1["MOZE3.0(免費版)"] += 1
@@ -484,7 +484,7 @@ def habit(reason, dic1):
             dic1["Spendee Budget & Money Tracker"] += 1
             dic1["碎碎念記帳"] += 1
         if res == "紀錄專案：紀錄特定事件所花的帳目（ex.旅行、週年慶）或 預算編製":
-            #有專案功能 or 編制預算功能者加一分 （已經統計到功能性中）
+            # 有專案功能 or 編制預算功能者加一分 （已經統計到功能性中）
             dic1["MOZE3.0(免費版)"] += 1
             dic1["MOZE3.0(付費版)"] += 1
             dic1["天天記帳"] += 1
@@ -493,7 +493,7 @@ def habit(reason, dic1):
             dic1["記帳城市(付費版)"] += 1
             dic1["CW money(免費版)"] += 1
             dic1["CW money(付費版)"] += 1
-        if res == "需要紀錄不同貨幣": #有可用不同貨幣記帳or匯率轉換功能者加一分  （已經統計到功能性中）
+        if res == "需要紀錄不同貨幣":  # 有可用不同貨幣記帳or匯率轉換功能者加一分  （已經統計到功能性中）
             dic1["理財幫手 AndroMoney"] += 1
             dic1["記帳城市(免費版)"] += 1
             dic1["記帳城市(付費版)"] += 1
@@ -513,5 +513,3 @@ if __name__ == '__main__':
     print(run_new_json())
     print(judgement(id='U4068c37804d834081ea24fe8d4521ab9'))
     print(judgement(id='F54091196'))
-
-
