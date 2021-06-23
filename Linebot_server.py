@@ -48,7 +48,7 @@ def richmenu():
         req = requests.request(
             'POST', "https://api.line.me/v2/bot/richmenu", headers=headers, data=json.dumps(body).encode('utf-8'))
         a = req.text[15:56]
-        with open("./richmenu/richmenu.png", 'rb') as f:
+        with open("./richmenu/richmenu.jpg", 'rb') as f:
             line_bot_api.set_rich_menu_image(a, "image/jpeg", f)
         req = requests.request(
             'POST', 'https://api.line.me/v2/bot/user/all/richmenu/' + a, headers=headers)
@@ -120,8 +120,6 @@ def callback():
     return 'OK'
 
 # 收到語音訊息__記帳
-
-
 @handler.add(MessageEvent, message=AudioMessage)
 def handle_message(event):
     print(event)
@@ -166,14 +164,15 @@ def handle_message(event):
                 event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
 
     elif text == "記帳提醒":
-        flex_message = lf.setting_alert_message()
-        line_bot_api.reply_message(
-            event.reply_token,
-            FlexSendMessage(
-                alt_text="記帳提醒",
-                contents=flex_message)
-        )
-        lf.alert_data(event.source.user_id)
+        if event.source.type == 'user':
+            flex_message = lf.setting_alert_message()
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text="記帳提醒",
+                    contents=flex_message)
+            )
+            lf.alert_data(event.source.user_id)
 
     elif text == "網址":  # liff網址
         response = "https://liff.line.me/1656056998-RP6bYLXr"
@@ -230,6 +229,8 @@ def handle_message(event):
 
     elif text == "已經記了":
         lf.enter_alert_audio_data(event.source.user_id, "0")
+    elif text=="取消提醒":
+        lf.cancel_alert(event.source.user_id)
     else:
         return
 
@@ -296,37 +297,42 @@ def alert():
     while lf.get_alert_time_user():
 
         alert_id, audio_id = lf.get_alert_time_user()
-
+"""
         try:
             for i in alert_id:
-                x = 1
-                # line_bot_api.push_message(i, TextSendMessage(text='記得每天記帳呦!'))
+                flex_message = lf.setting_check_message()
+                line_bot_api.push_message(i, FlexSendMessage(
+                    alt_text='記得每天記帳喲~',
+                    contents=flex_message))
+
                 # break
             # break
+
             for i in audio_id:
 
                 mess = "你還有{}筆語音還沒紀錄".format(
                     lf.return_alert_data()[i]["audio"])
-                # line_bot_api.push_message(i, TemplateSendMessage(
-                #                           alt_text='Confirm template',
-                #                           template=ConfirmTemplate(
-                #                               text=mess,
-                #                               actions=[
-                #                                   MessageAction(
-                #                                       label='已經記了',
-                #                                       text='已經記了'
-                #                                   ),
-                #                                   MessageAction(
-                #                                       label='等等再說',
-                #                                       text='等等再說'
-                #                                   )
-                #                               ]
-                #                           )
-                #                           ))
+                line_bot_api.push_message(i, TemplateSendMessage(
+
+                                           alt_text=mess,
+                                           template=ConfirmTemplate(
+                                               text=mess,
+                                               actions=[
+                                                   MessageAction(
+                                                       label='已經記了',
+                                                      text='已經記了'
+                                                   ),
+                                                   MessageAction(
+                                                       label='等等再說',
+                                                       text='等等再說'
+                                                   )
+                                               ]
+                                           )
+                                           ))
             break
         except:
             pass
-
+"""
 
 if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
     sched = BackgroundScheduler()

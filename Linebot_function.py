@@ -16,6 +16,10 @@ def setting_alert_message():
         open('./flex_message/alert.json', 'r', encoding='utf-8'))
     return flex_message
 
+def setting_check_message():
+    flex_message = json.load(
+        open('./flex_message/alert_check.json', 'r', encoding='utf-8'))
+    return flex_message
 
 def alert_data(user_id):
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
@@ -68,6 +72,15 @@ def get_audio_user():
             user.append(i)
 
     return user
+
+def cancel_alert(user_id):
+    with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
+        data= json.load(f, strict=False)
+    for i in data:
+        if i==user_id:
+            data[i]["time"]="tm"
+        with open('./alert_data.json', "w", encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
 
 
 def return_alert_data():
