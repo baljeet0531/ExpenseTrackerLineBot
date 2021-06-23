@@ -46,7 +46,7 @@ def richmenu():
         req = requests.request(
             'POST', "https://api.line.me/v2/bot/richmenu", headers=headers, data=json.dumps(body).encode('utf-8'))
         a = req.text[15:56]
-        with open("./richmenu/richmenu.png", 'rb') as f:
+        with open("./richmenu/richmenu.jpg", 'rb') as f:
             line_bot_api.set_rich_menu_image(a, "image/jpeg", f)
         req = requests.request(
             'POST', 'https://api.line.me/v2/bot/user/all/richmenu/' + a, headers=headers)
@@ -174,26 +174,31 @@ def handle_message(event):
             line_bot_api.reply_message(
                 event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
     elif text == "想換記帳程式":
-        with open('user_recommend_data.json', 'r', encoding='utf-8') as object:
-            u_r_d = json.load(object)
-
-        del u_r_d[event.source.user_id][app_recommend.total(
-            u_r_d[event.source.user_id])]
-
-        with open('user_recommend_data.json', "w", encoding='utf-8') as f:
-            json.dump(u_r_d, f, ensure_ascii=False, indent=4)
-
         with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
             q_d = json.load(object)
-        app = app_recommend.total(u_r_d[event.source.user_id])
-        system = q_d[event.source.user_id]["你的手機系統?"]
-        with open('app_download_url.json', 'r', encoding='utf-8') as object:
-            a_d_u = json.load(object)
-        muilt_reply = []
-        muilt_reply.append(TextSendMessage(text="試試「" + app + "」去紀錄帳目如何？"))
-        muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
-        line_bot_api.reply_message(
-            event.reply_token, muilt_reply)
+
+        if event.source.user_id in q_d:
+            with open('user_recommend_data.json', 'r', encoding='utf-8') as object:
+                u_r_d = json.load(object)
+
+            del u_r_d[event.source.user_id][app_recommend.total(
+                u_r_d[event.source.user_id])]
+
+            with open('user_recommend_data.json', "w", encoding='utf-8') as f:
+                json.dump(u_r_d, f, ensure_ascii=False, indent=4)
+
+            app = app_recommend.total(u_r_d[event.source.user_id])
+            system = q_d[event.source.user_id]["你的手機系統?"]
+            with open('app_download_url.json', 'r', encoding='utf-8') as object:
+                a_d_u = json.load(object)
+            muilt_reply = []
+            muilt_reply.append(TextSendMessage(text="試試「" + app + "」去紀錄帳目如何？"))
+            muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
+            line_bot_api.reply_message(
+                event.reply_token, muilt_reply)
+        else:
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text="要先進行「記帳推薦結果」後才能給予新的程式回饋噢"))
 
     elif text == "記帳提醒":
         flex_message = lf.setting_alert_message()
