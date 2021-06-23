@@ -40,16 +40,19 @@
                 <div id="payback">
                     <p class="p-title">我要還</p>
                     <div class="user-list-container">
+                        <p style="font-size:12px;color:#FFFFFF">Loading...</p>
                     </div>
                 </div>
                 <div id="paid">
                     <p class="p-title">我先付</p>
                     <div class="user-list-container">
+                        <p style="font-size:12px;color:#FFFFFF;">Loading...</p>
                     </div>
                 </div>
                 <img id="detail-btn" src="../image/detail-btn.png">
             </div>
             <div id="group-history">
+                <p style="font-size:12px;">Loading...</p>
             </div>
         </div>
         <div id="detail-page">
@@ -63,12 +66,14 @@
                 <div id="payback-container">
                     <p class="p-title">我要還</p>
                     <div class="d-list-container">
+                        <p style="font-size:12px;">Loading...</p>
                     </div>
                     <div id="border-bot"></div>
                 </div>
                 <div id="paid-container">
                     <p class="p-title">我先付</p>
                     <div class="d-list-container">
+                        <p style="font-size:12px;">Loading...</p>
                     </div>
                     <div id="border-bot"></div>
                 </div>
@@ -153,6 +158,28 @@
                     </div>
                 </div>
             </div>
+            <div class="transparent-blur">
+                <div class="transparent-bg"></div>
+                <div id="confirm-popout">
+                    <div id="payback-describe-container">
+                        <p>我要還</p>
+                        <div class="user-name-container">
+                            <p class="user-name"></p>
+                        </div>
+                        <input type="number" placeholder="輸入金額" min="1"
+                            oninput="validity.valid||(value='');value=Number(value).toString();">
+                        <p>twd</p>
+                    </div>
+                    <div id="share-container">
+                        <p>分享文字到line(手機才有此功能)</p>
+                        <input type="text" placeholder="請輸入分享文字(最多30字)..." maxlength="30">
+                    </div>
+                    <div class="btn-container">
+                        <img class="cancel-btn" src="../image/cancel-btn.png">
+                        <img class="confirm-btn" src="../image/confirm-btn.png">
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="bot-blur">
@@ -214,8 +241,8 @@
             </div>
             <div id="add-price">
                 <img class="add-title" src="../image/add-price.png">
-                <input type="number" placeholder="請輸入金額(正整數)..." min="1" oninput="validity.valid||(value='');">
-                <!-- 處理開頭為0 -->
+                <input type="number" placeholder="輸入金額" min="1"
+                    oninput="validity.valid||(value='');value=Number(value).toString();">
                 <img id="twd" src="../image/twd.png">
                 <div class="add-bot-border"></div>
             </div>

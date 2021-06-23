@@ -134,8 +134,6 @@ def handle_message(event):
 
 
 # 收到message event
-
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     print(event)  # 看event長怎樣

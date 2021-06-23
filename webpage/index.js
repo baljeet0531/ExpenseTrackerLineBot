@@ -10,7 +10,7 @@ console.log(groupID);
 // console.log(userName);
 
 $(document).ready(function () {
-    $.when(loadUserList()).then(loadGroupHistory());
+    loadUserList();
 });
 
 function loadUserList() {
@@ -28,6 +28,7 @@ function loadUserList() {
         });
     });
 }
+
 
 function loadGroupHistory() {
     $.get('./group_data.json', function (json) {
@@ -96,7 +97,7 @@ function appendDebts(user_list) {
                 txt += `<p class="user-name">${user_list[user_id]["user_name"]}</p>`
                 txt += "</div>"
                 txt += `<p class="total-cost">${price} twd</p>`
-                txt += "<img class=\"interact-btn payback-btn\" src=\"../image/received-btn.png\">"
+                txt += "<img class=\"interact-btn received-btn\" src=\"../image/received-btn.png\">"
                 txt += "</div>"
                 $(`#paid-container .d-list-container .${user_id}`).html(txt);
             }
@@ -148,6 +149,8 @@ $('#login-user-flex').on("click", ".user-name-container", function () {
 
 $('#welcome-btn').click(function () {
     if ($('#login-user-flex .user-name-container').hasClass('login-user')) {
+        loadGroupHistory();
+        loadDebts();
         $('#front-cover').css("display", "none");
         $('#info-page').fadeIn(500);
 
@@ -156,7 +159,6 @@ $('#welcome-btn').click(function () {
         $('.login-user').clone().appendTo('#pay-user-flex');
 
         $('.acc-name').html(`${$('.login-user p').html()}'S ACCOUNTS`);
-        loadDebts();
     }
 })
 
@@ -350,8 +352,81 @@ $('#save-btn-act').click(function () {
     })
 
 })
+$('#payback-container').on('click', '.payback-btn', function () {
+    paybackName = $(this).siblings('.user-name-container').children('p').html();
+    paybackMoney = $(this).siblings('.total-cost').html().split(" ")[0].slice(1);
+    console.log(paybackMoney);
+    $('#payback-describe-container .user-name').html(paybackName);
+    $('#payback-describe-container input').val(paybackMoney);
+
+    $('.transparent-blur').fadeIn(500);
+    $('#payback-describe-container').css('display', 'flex');
+})
+
+$('#paid-container').on('click', '.received-btn', function () {
+    paidName = $(this).siblings('.user-name-container').children('p').html();
+    paidMoney = $(this).siblings('.total-cost').html().split(" ")[0];
+
+    $('#share-container input').val(`${paidName}記得還我${paidMoney}元喔~`);
+
+    $('.transparent-blur').fadeIn(500);
+    $('#share-container').css('display', 'block');
+})
+
+$('.cancel-btn').click(function () {
+    $('.transparent-blur,#payback-describe-container, #share-container').fadeOut(500);
+    setTimeout(function () {
+        $('#payback-describe-container .user-name').html('');
+        $('.confirm-popoutinput').val('');
+    }, 400)
+})
+
+$('.confirm-btn').click(function () {
+    if ($('#payback-describe-container').css('display') != 'none') {
+        $.ajax({
+            url: './save_record',
+            type: "POST",
+            data: JSON.stringify({
+                groupID: groupID,
+                date: today,
+                save_json: save_json
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (group_json) {
+                paybackName = $('#payback-describe-container .user-name').html();
+                paybackMoney = $('#payback-describe-container input').val();
+                $('#share-container input').val(`${paybackName}我還你${paybackMoney}元了喔~`);
+                $('#payback-describe-container').fadeOut(500);
+                $('#share-container').fadeIn(500);
+
+                $('#close-btn').click();
+                console.log("success")
+                console.log(group_json);
+                group_history = group_json["data"]["history"];
+                user_list = group_json["data"]["user_list"];
+
+                prependGroupHistory(group_history);
+                appendDebts(user_list);
+            },
+            error: function () {
+                console.log("error");
+                $('#saveing-blur').css('display', 'none');
+            }
+        })
 
 
+    }
+    else if ($('#share-container').css('display') != 'none') {
+        shareText = $('#share-container input').val();
 
+        window.open(`https://line.me/R/share?text=${encodeURIComponent(shareText)}`)
+        $('.cancel-btn').click();
+    }
+})
+
+$('.transparent-bg').click(function () {
+    $('.cancel-btn').click();
+})
 
 

@@ -542,6 +542,132 @@ p {
     width: 100%;
     text-align: right;
 }
+
+.transparent-blur{
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 100vh;
+    width: 100%;
+    z-index: 1;
+}
+
+.transparent-bg{
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 100%;
+    width: 100%;
+}
+
+
+#confirm-popout{
+    position: absolute;
+    display: block;
+    width: 292px;
+    height: 144px;
+    top: calc(calc(100vh - 144px) / 2);
+    left: calc(calc(100% - 292px) / 2);
+    filter: drop-shadow(3px 3px 6px #00000029);
+}
+
+#payback-describe-container, #share-container {
+    position: absolute;
+    height: 88px;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background-color: #F5F4EF;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+#payback-describe-container{
+    display: none;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#payback-describe-container p {
+    width: 37px;
+    font-size: 12px;
+    line-height: 22px;
+    height: 22px;
+    white-space: nowrap;
+}
+
+#payback-describe-container .user-name {
+    width:fit-content;
+}
+
+#payback-describe-container .user-name-container {
+    height: 22px;
+}
+
+
+
+#payback-describe-container input {
+    height: 22px;
+    width: 60px;
+    padding: 0;
+    border: none;
+    border-bottom: 1px solid black;
+    text-align: center;
+    background-color: #F5F4EF;
+
+}
+
+
+#share-container{
+    display: none;
+}
+
+#share-container p{
+    height: 44px;
+    line-height: 44px;
+    position: relative;
+}
+
+#share-container input{
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    top: 11px;
+    height: 22px;
+    padding: 0;
+    border: none;
+    border-bottom: 1px solid black;
+    text-align: center;
+    width: 220px;
+    background-color: #F5F4EF;
+}
+
+.btn-container {
+    display: grid;
+    position: absolute;
+    width: 100%;
+    height: 56px;
+    left: 0;
+    bottom: 0;
+    background-color: #FDFDFA;
+
+    grid-template-rows: 26px;
+    grid-template-columns: 43px 43px;
+    justify-content: space-evenly;
+    align-content: space-around;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.btn-container img {
+    width: 100%;
+}
 /******************************/
 #add-page{
     position: fixed;
