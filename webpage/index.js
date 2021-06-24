@@ -2,12 +2,6 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const groupID = urlParams.get('groupId');
-// const userID = urlParams.get('userID');
-// const userName = urlParams.get('userName');
-
-console.log(groupID);
-// console.log(userID);
-// console.log(userName);
 
 $(document).ready(function () {
     loadUserList();
@@ -23,8 +17,6 @@ function loadUserList() {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (group_json) {
-
-            console.log("success")
             user_list = (group_json["data"]["user_list"]);
             $.each(user_list, function (key, val) {
                 $(`<div class=\"user-name-container ${key}\">`).appendTo('#login-user-flex, #share-user-flex');
@@ -52,8 +44,6 @@ function loadGroupHistory() {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (group_json) {
-
-            console.log("success")
             prependGroupHistory(group_json["data"]["history"]);
         },
         error: function () {
@@ -64,6 +54,7 @@ function loadGroupHistory() {
 }
 function prependGroupHistory(group_history) {
     $('#group-history').empty();
+    login_user_id = $('.login-user').attr('class').split(' ')[1]
     $.each(group_history, function (date, dateRecord) {
         $(`<div class=\"date-record ${date}\"></div>`).prependTo('#group-history');
         $.each(dateRecord, function (index, recordInfo) {
@@ -74,6 +65,7 @@ function prependGroupHistory(group_history) {
             var host = recordInfo["host"];
             var host_name = $(`.${host} p`).html();
             var price = recordInfo["price"];
+            var myShare = recordInfo["share"][login_user_id];
 
             var txt = ""
             txt += `<img class=\"category-icon\" src=\"../image/${category}.png\">`
@@ -83,6 +75,7 @@ function prependGroupHistory(group_history) {
             txt += "</div>"
             txt += `<p class=\"item-name\">${items}</p>`
             txt += `<p class=\"total-cost\">${price} twd</p>`
+            txt += `<p class=\"my-share\">My share: ${myShare} twd</p>`
             txt += "</div>"
 
             $(`#${date}_${index}`).html(txt);
@@ -102,8 +95,6 @@ function loadDebts() {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (group_json) {
-
-            console.log("success")
             appendDebts(group_json["data"]["user_list"]);
         },
         error: function () {
@@ -281,8 +272,6 @@ $('#next-btn').click(function () {
         $('#add-content').animate({ 'left': '-100vw' }, 500, function () { $('#add-content').css('display', 'none'); })
         $('#save-btn-inact, #add-pg-back-btn').fadeIn(500);
         $('#next-btn').fadeOut(500);
-
-        calculateShare();
     }
 })
 
@@ -371,53 +360,59 @@ function calculateShare() {
 }
 
 $('#save-btn-act').click(function () {
-    $('#saving-blur').css('display', 'block');
-
-    save_json = {
-        "host": $('.login-user').attr('class').split(' ')[1],
-        "category": $('.select-cate').attr('id'),
-        "items": $('#add-items input').val(),
-        "price": $('#add-price input').val(),
-        "share": {}
-    }
-
-    $('#edit-share-user-container').children().each(function () {
-        var userID = $(this).attr('class').split(' ')[1];
-        save_json["share"][userID] = $(this).find('input').val();
+    shareTotalPrice = 0
+    totalPrice = $('#add-price input').val()
+    $('#edit-share-user-container input').each(function () {
+        shareTotalPrice += parseInt($(this).val());
     });
+    if (shareTotalPrice == totalPrice) {
+        $('#saving-blur').css('display', 'block');
 
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    today = mm + '-' + dd;
-
-    console.log(save_json)
-
-    $.ajax({
-        url: './save_record',
-        type: "POST",
-        data: JSON.stringify({
-            groupID: groupID,
-            date: today,
-            save_json: save_json
-        }),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function (group_json) {
-            $('#close-btn').click();
-            console.log("success")
-            console.log(group_json);
-            group_history = group_json["data"]["history"];
-            user_list = group_json["data"]["user_list"];
-
-            prependGroupHistory(group_history);
-            appendDebts(user_list);
-        },
-        error: function () {
-            console.log("error");
+        save_json = {
+            "host": $('.login-user').attr('class').split(' ')[1],
+            "category": $('.select-cate').attr('id'),
+            "items": $('#add-items input').val(),
+            "price": $('#add-price input').val(),
+            "share": {}
         }
-    })
 
+        $('#edit-share-user-container').children().each(function () {
+            var userID = $(this).attr('class').split(' ')[1];
+            save_json["share"][userID] = $(this).find('input').val();
+        });
+
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        today = mm + '-' + dd;
+
+        console.log(save_json)
+
+        $.ajax({
+            url: './save_record',
+            type: "POST",
+            data: JSON.stringify({
+                groupID: groupID,
+                date: today,
+                save_json: save_json
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (group_json) {
+                $('#close-btn').click();
+                console.log("success")
+                console.log(group_json);
+                group_history = group_json["data"]["history"];
+                user_list = group_json["data"]["user_list"];
+
+                prependGroupHistory(group_history);
+                appendDebts(user_list);
+            },
+            error: function () {
+                console.log("error");
+            }
+        })
+    }
 })
 $('#payback-container').on('click', '.payback-btn', function () {
     receiveName = $(this).siblings('.user-name-container').children('p').html();

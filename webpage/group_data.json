@@ -4,11 +4,11 @@
             "U9428941dc9c7fa6c078fed7751693cae": {
                 "user_name": "柏翔",
                 "debts": {
-                    "U8f335522faf69cb9f383eb830523db6b": 0,
+                    "U8f335522faf69cb9f383eb830523db6b": 200,
                     "U9428941dc9c7fa6c078fed7751693cae": -34,
-                    "U60bda6815f12204774d20b0388e242e2": 0,
-                    "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 0,
-                    "U5f53c96c96290921f81978df828f7c84": 0
+                    "U60bda6815f12204774d20b0388e242e2": 200,
+                    "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 200,
+                    "U5f53c96c96290921f81978df828f7c84": 200
                 },
                 "debts_records": {
                     "1": {
@@ -70,7 +70,7 @@
             "U8f335522faf69cb9f383eb830523db6b": {
                 "user_name": "怡蓉",
                 "debts": {
-                    "U9428941dc9c7fa6c078fed7751693cae": 0,
+                    "U9428941dc9c7fa6c078fed7751693cae": -200,
                     "U60bda6815f12204774d20b0388e242e2": 0,
                     "U8f335522faf69cb9f383eb830523db6b": -40,
                     "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 0,
@@ -119,7 +119,7 @@
                 "user_name": "易成",
                 "debts": {
                     "U8f335522faf69cb9f383eb830523db6b": 0,
-                    "U9428941dc9c7fa6c078fed7751693cae": 0,
+                    "U9428941dc9c7fa6c078fed7751693cae": -200,
                     "U5f53c96c96290921f81978df828f7c84": 0,
                     "Ue8ba954b3a92b7bf3ef9691ef5c797b6": -60,
                     "U60bda6815f12204774d20b0388e242e2": 0
@@ -167,7 +167,7 @@
                 "user_name": "林玟其",
                 "debts": {
                     "U8f335522faf69cb9f383eb830523db6b": 0,
-                    "U9428941dc9c7fa6c078fed7751693cae": 0,
+                    "U9428941dc9c7fa6c078fed7751693cae": -200,
                     "U5f53c96c96290921f81978df828f7c84": 0,
                     "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 0,
                     "U60bda6815f12204774d20b0388e242e2": 0
@@ -209,7 +209,7 @@
                 "user_name": "怡安",
                 "debts": {
                     "U8f335522faf69cb9f383eb830523db6b": 0,
-                    "U9428941dc9c7fa6c078fed7751693cae": 0,
+                    "U9428941dc9c7fa6c078fed7751693cae": -200,
                     "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 0,
                     "U60bda6815f12204774d20b0388e242e2": -50,
                     "U5f53c96c96290921f81978df828f7c84": 0
@@ -472,6 +472,32 @@
                         "Ue8ba954b3a92b7bf3ef9691ef5c797b6": "150",
                         "U5f53c96c96290921f81978df828f7c84": "150"
                     }
+                },
+                "4": {
+                    "host": "U9428941dc9c7fa6c078fed7751693cae",
+                    "category": "food",
+                    "items": "小上海",
+                    "price": "500",
+                    "share": {
+                        "U9428941dc9c7fa6c078fed7751693cae": "100",
+                        "U60bda6815f12204774d20b0388e242e2": "100",
+                        "U8f335522faf69cb9f383eb830523db6b": "100",
+                        "Ue8ba954b3a92b7bf3ef9691ef5c797b6": "100",
+                        "U5f53c96c96290921f81978df828f7c84": "100"
+                    }
+                },
+                "5": {
+                    "host": "U9428941dc9c7fa6c078fed7751693cae",
+                    "category": "food",
+                    "items": "中上海",
+                    "price": "500",
+                    "share": {
+                        "U9428941dc9c7fa6c078fed7751693cae": "100",
+                        "U60bda6815f12204774d20b0388e242e2": "100",
+                        "U8f335522faf69cb9f383eb830523db6b": "100",
+                        "Ue8ba954b3a92b7bf3ef9691ef5c797b6": "100",
+                        "U5f53c96c96290921f81978df828f7c84": "100"
+                    }
                 }
             }
         }
@@ -559,6 +585,30 @@
                     "share": {
                         "U9cbb2b5e043c403bbd0eac405dea62cc": "7500",
                         "Ue2f7e71d3acf9688ebf4f4da20280306": "7500"
+                    }
+                }
+            }
+        }
+    },
+    "C453268105871f81735fd77c895f4e46c": {
+        "user_list": {
+            "U9428941dc9c7fa6c078fed7751693cae": {
+                "user_name": "柏翔",
+                "debts": {
+                    "U9428941dc9c7fa6c078fed7751693cae": -35
+                },
+                "debts_records": {}
+            }
+        },
+        "history": {
+            "06-24": {
+                "1": {
+                    "host": "U9428941dc9c7fa6c078fed7751693cae",
+                    "category": "food",
+                    "items": "大西瓜",
+                    "price": "35",
+                    "share": {
+                        "U9428941dc9c7fa6c078fed7751693cae": "35"
                     }
                 }
             }

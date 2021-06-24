@@ -218,132 +218,158 @@ def handle_message(event):
     print(event)  # 看event長怎樣
     text = event.message.text
 
-    if text == "記帳推薦":
-        recommend_message = lf.setting_recommend_message()
-        line_bot_api.reply_message(
-            event.reply_token,
-            FlexSendMessage(
-                alt_text="記帳推薦",
-                contents=recommend_message))
-    elif text == "記帳推薦!":
-        muilt_reply = []
-        muilt_reply.append(TextSendMessage
-                           (text="以下為您的ID以及推薦你適合記帳程式的連結。\n進入連結後請在第一題填入我們提供的ID進行，謝謝！"))
-        muilt_reply.append(TextSendMessage(text=event.source.user_id))
-        muilt_reply.append(TextSendMessage(
-            text='https://forms.gle/9i3bmXM6QXJv3gpV8'))
-        line_bot_api.reply_message(
-            event.reply_token, muilt_reply)
-
-    elif text == "推薦結果":
-        app_recommend.run_new_json()  # 此步驟是先讓問卷json檔有新的資料
-        with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
-            q_d = json.load(object)
-
-        if event.source.user_id in q_d:
-            app = app_recommend.judgement(event.source.user_id)
-            system = q_d[event.source.user_id]["你的手機系統?"]
-            with open('app_download_url.json', 'r', encoding='utf-8') as object:
-                a_d_u = json.load(object)
-            muilt_reply = []
-            muilt_reply.append(TextSendMessage(
-                text="我會推薦你用「" + app + "」去紀錄帳目"))
-            muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
-            line_bot_api.reply_message(
-                event.reply_token, muilt_reply)
-        else:
-            line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
-    elif text == "想換記帳程式":
-        with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
-            q_d = json.load(object)
-
-        if event.source.user_id in q_d:
-            with open('user_recommend_data.json', 'r', encoding='utf-8') as object:
-                u_r_d = json.load(object)
-
-            del u_r_d[event.source.user_id][app_recommend.total(
-                u_r_d[event.source.user_id])]
-
-            with open('user_recommend_data.json', "w", encoding='utf-8') as f:
-                json.dump(u_r_d, f, ensure_ascii=False, indent=4)
-
-            app = app_recommend.total(u_r_d[event.source.user_id])
-            system = q_d[event.source.user_id]["你的手機系統?"]
-            with open('app_download_url.json', 'r', encoding='utf-8') as object:
-                a_d_u = json.load(object)
-            muilt_reply = []
-            muilt_reply.append(TextSendMessage(text="試試「" + app + "」去紀錄帳目如何？"))
-            muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
-            line_bot_api.reply_message(
-                event.reply_token, muilt_reply)
-        else:
-            line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text="要先進行「記帳推薦結果」後才能給予新的程式回饋噢"))
-
-    elif text == "記帳提醒":
-        flex_message = lf.setting_alert_message()
-        line_bot_api.reply_message(
-            event.reply_token,
-            FlexSendMessage(
-                alt_text="記帳提醒",
-                contents=flex_message)
-        )
-        lf.alert_data(event.source.user_id)
-
-    elif text == '需要欠債提醒！':  # 回傳提醒格式
-        global step
-        if step == 0:
-            flex_message = lf.setting_debt_message()
-            line_bot_api.reply_message(
-                event.reply_token,
-                FlexSendMessage(
-                    alt_text="需要欠債提醒！",
-                    contents=flex_message)
-            )
-            lf.debt_data(event.source.user_id)
-            print(step)
-            lf.enter_debt_count(event.source.user_id)
-            step = 1
-        else:
-            response = "請依照順序填寫欠債提醒！"
-            line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text=response))
-
-    elif text[0:5] == '我要記債：' or text[0:5] == '我要記債:':  # 回傳提醒時間選項
-        if step == 1:
-            flex_message = lf.debt_alerting_time()
-            line_bot_api.reply_message(
-                event.reply_token,
-                FlexSendMessage(
-                    alt_text="我要記債：",
-                    contents=flex_message)
-            )
-            lf.enter_debt_data_plus(
-                text=text, time='0', user_id=event.source.user_id)
-            print(step)
-            step = 2
-        else:
-            response = "請依照順序填寫欠債提醒！"
-            line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text=response))
-
-    elif text == "網址":  # liff網址
-        response = "https://liff.line.me/1656056998-RP6bYLXr"
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=response))
-
-    elif text == "我又沒有唸書":
+    # easter egg
+    if text == "我又沒有唸書":
         # send image_message
         line_bot_api.reply_message(
             event.reply_token, ImageSendMessage(
-                original_content_url=ngrok_url + "/image/can_not_read.jpg",
-                preview_image_url=ngrok_url + "/image/can_not_read.jpg"
+                original_content_url="https://drive.google.com/uc?id=1V_XfY8wKX4aqgIEpRFshNH9kGHaKjn0u",
+                preview_image_url="https://drive.google.com/uc?id=1V_XfY8wKX4aqgIEpRFshNH9kGHaKjn0u"
             )
         )
         return
-    elif text == "功能":
-        if event.source.type == 'group':  # 群組功能
+
+    if event.source.type == 'user':  # 個人功能
+        if text == "記帳推薦":
+            recommend_message = lf.setting_recommend_message()
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text="記帳推薦",
+                    contents=recommend_message))
+        elif text == "記帳推薦!":
+            muilt_reply = []
+            muilt_reply.append(TextSendMessage
+                               (text="以下為您的ID以及推薦你適合記帳程式的連結。\n進入連結後請在第一題填入我們提供的ID進行，謝謝！"))
+            muilt_reply.append(TextSendMessage(text=event.source.user_id))
+            muilt_reply.append(TextSendMessage(
+                text='https://forms.gle/9i3bmXM6QXJv3gpV8'))
+            line_bot_api.reply_message(
+                event.reply_token, muilt_reply)
+
+        elif text == "推薦結果":
+            app_recommend.run_new_json()  # 此步驟是先讓問卷json檔有新的資料
+            with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
+                q_d = json.load(object)
+
+            if event.source.user_id in q_d:
+                app = app_recommend.judgement(event.source.user_id)
+                system = q_d[event.source.user_id]["你的手機系統?"]
+                with open('app_download_url.json', 'r', encoding='utf-8') as object:
+                    a_d_u = json.load(object)
+                muilt_reply = []
+                muilt_reply.append(TextSendMessage(
+                    text="我會推薦你用「" + app + "」去紀錄帳目"))
+                muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
+                line_bot_api.reply_message(
+                    event.reply_token, muilt_reply)
+            else:
+                line_bot_api.reply_message(
+                    event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
+        elif text == "想換記帳程式":
+            with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
+                q_d = json.load(object)
+
+            if event.source.user_id in q_d:
+                with open('user_recommend_data.json', 'r', encoding='utf-8') as object:
+                    u_r_d = json.load(object)
+
+                del u_r_d[event.source.user_id][app_recommend.total(
+                    u_r_d[event.source.user_id])]
+
+                with open('user_recommend_data.json', "w", encoding='utf-8') as f:
+                    json.dump(u_r_d, f, ensure_ascii=False, indent=4)
+
+                app = app_recommend.total(u_r_d[event.source.user_id])
+                system = q_d[event.source.user_id]["你的手機系統?"]
+                with open('app_download_url.json', 'r', encoding='utf-8') as object:
+                    a_d_u = json.load(object)
+                muilt_reply = []
+                muilt_reply.append(TextSendMessage(
+                    text="試試「" + app + "」去紀錄帳目如何？"))
+                muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
+                line_bot_api.reply_message(
+                    event.reply_token, muilt_reply)
+            else:
+                line_bot_api.reply_message(
+                    event.reply_token, TextSendMessage(text="要先進行「記帳推薦結果」後才能給予新的程式回饋噢"))
+
+        elif text == "記帳提醒":
+            flex_message = lf.setting_alert_message()
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text="記帳提醒",
+                    contents=flex_message)
+            )
+            lf.alert_data(event.source.user_id)
+
+        elif text == '需要欠債提醒！':  # 回傳提醒格式
+            global step
+            if step == 0:
+                flex_message = lf.setting_debt_message()
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    FlexSendMessage(
+                        alt_text="需要欠債提醒！",
+                        contents=flex_message)
+                )
+                lf.debt_data(event.source.user_id)
+                print(step)
+                lf.enter_debt_count(event.source.user_id)
+                step = 1
+            else:
+                response = "請依照順序填寫欠債提醒！"
+                line_bot_api.reply_message(
+                    event.reply_token, TextSendMessage(text=response))
+
+        elif text[0:5] == '我要記債：' or text[0:5] == '我要記債:':  # 回傳提醒時間選項
+            if step == 1:
+                flex_message = lf.debt_alerting_time()
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    FlexSendMessage(
+                        alt_text="我要記債：",
+                        contents=flex_message)
+                )
+                lf.enter_debt_data_plus(
+                    text=text, time='0', user_id=event.source.user_id)
+                print(step)
+                step = 2
+            else:
+                response = "請依照順序填寫欠債提醒！"
+                line_bot_api.reply_message(
+                    event.reply_token, TextSendMessage(text=response))
+
+        elif text == "群組分帳":
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text="把記帳幫手邀請到群組，並在群組中使用\"群組分帳\"功能喔"))
+            return
+
+        elif text == "已經記了":
+            lf.enter_alert_audio_data(event.source.user_id, "0")
+
+        elif text[0:5] == "處理完成第" and text[-1] == "筆":
+            num = text[5:-1]
+            lf.cancel_debt_data(event.source.user_id, num)
+            response = '收到！已幫您取消這筆提醒！'
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=response))
+        elif text[0:5] == "晚點處理第" and text[-1] == "筆":
+            return
+
+        elif text == "取消提醒":
+            lf.cancel_alert(event.source.user_id)
+
+        elif text == "現在去記":
+            return
+        else:
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text='我看不懂QQ'))
+            return
+
+    if event.source.type == 'group':  # 群組功能
+        if text == "功能" or text == "記帳幫手":
             group_id = event.source.group_id
 
             # uri encode
@@ -364,27 +390,10 @@ def handle_message(event):
                     contents=flex_message)
             )
             return
-
-        elif event.source.type == 'user':  # 個人功能
-            response = "個人功能"
+        else:
             line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text=response))
-
-    elif text == "已經記了":
-        lf.enter_alert_audio_data(event.source.user_id, "0")
-
-    elif text[0:5] == "處理完成第" and text[-1] == "筆":
-        num = text[5:-1]
-        lf.cancel_debt_data(event.source.user_id, num)
-        response = '收到！已幫您取消這筆提醒！'
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=response))
-
-    elif text == "取消提醒":
-        lf.cancel_alert(event.source.user_id)
-
-    else:
-        return
+                event.reply_token, TextSendMessage(text='我看不懂QQ'))
+            return
 
 
 # 收到Postback event
