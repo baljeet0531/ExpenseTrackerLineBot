@@ -16,14 +16,18 @@ def setting_alert_message():
         open('./flex_message/alert.json', 'r', encoding='utf-8'))
     return flex_message
 
+
 def setting_check_message():
     flex_message = json.load(
         open('./flex_message/alert_check.json', 'r', encoding='utf-8'))
     return flex_message
+
+
 def setting_recommend_message():
     recommend_message = json.load(
         open('./flex_message/recommend.json', 'r', encoding='utf-8'))
     return recommend_message
+
 
 def alert_data(user_id):
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
@@ -77,12 +81,13 @@ def get_audio_user():
 
     return user
 
+
 def cancel_alert(user_id):
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
-        data= json.load(f, strict=False)
+        data = json.load(f, strict=False)
     for i in data:
-        if i==user_id:
-            data[i]["time"]="tm"
+        if i == user_id:
+            data[i]["time"] = "tm"
         with open('./alert_data.json', "w", encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -108,7 +113,8 @@ def register_to_group_data(group_id, user_id, user_name):
     if user_id not in data[group_id]["user_list"]:
         data[group_id]["user_list"][user_id] = {
             'user_name': user_name,
-            "debts": {}
+            "debts": {},
+            "debts_records": {},
         }
         reply = user_name + "成功註冊"
     else:

@@ -29,7 +29,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://3282dfa341db.ngrok.io'
+ngrok_url = 'https://14255addbce5.ngrok.io'
 
 
 # 載入richmenu
@@ -52,6 +52,80 @@ def richmenu():
             'POST', 'https://api.line.me/v2/bot/user/all/richmenu/' + a, headers=headers)
     except:
         pass
+
+
+@app.route("/webpage/get_group_data", methods=['POST'])
+def get_group_data():
+    body = request.get_json()
+    group_id = body["groupID"]
+
+    with open("./webpage/group_data.json", "r", encoding='utf-8') as f:
+        data = json.load(f)
+
+    if group_id not in data:
+        print("no group record")
+        abort(400)
+
+    return json.dumps({'success': True, 'data': data[group_id]}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/webpage/save_debts", methods=['POST'])
+def save_debts():
+    body = request.get_json()
+    group_id = body["groupID"]
+    date_time = body["date_time"]
+    payback_user = body["payback_user"]
+    received_user = body["received_user"]
+    money = body["money"]
+
+    with open("./webpage/group_data.json", "r", encoding='utf-8') as f:
+        data = json.load(f)
+
+    if group_id not in data:
+        print("no group record")
+        abort(400)
+
+    if (payback_user not in data[group_id]["user_list"]) or (received_user not in data[group_id]["user_list"]):
+        print("invalid host")
+        abort(400)
+
+    payback_record_num = len(data[group_id]["user_list"][payback_user]
+                             ["debts_records"].keys()) + 1
+
+    data[group_id]["user_list"][payback_user]["debts_records"].update(
+        {
+            payback_record_num: {
+                "date_time": date_time,
+                "interact_with": received_user,
+                "method": "payback",
+                "money": money
+            }
+        }
+    )
+
+    received_record_num = len(data[group_id]["user_list"][received_user]
+                              ["debts_records"].keys()) + 1
+
+    data[group_id]["user_list"][received_user]["debts_records"].update(
+        {
+            received_record_num: {
+                "date_time": date_time,
+                "interact_with": payback_user,
+                "method": "received",
+                "money": money
+            }
+        }
+    )
+
+    data[group_id]["user_list"][payback_user]["debts"][received_user] += int(
+        money)
+    data[group_id]["user_list"][received_user]["debts"][payback_user] -= int(
+        money)
+
+    with open("./webpage/group_data.json", "w", encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+    return json.dumps({'success': True, 'data': data[group_id]["user_list"]}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/webpage/save_record", methods=['POST'])

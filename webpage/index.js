@@ -14,29 +14,52 @@ $(document).ready(function () {
 });
 
 function loadUserList() {
-    $.get('./group_data.json', function (json) {
-        group = json[groupID];
-        user_list = group["user_list"];
+    $.ajax({
+        url: './get_group_data',
+        type: "POST",
+        data: JSON.stringify({
+            groupID: groupID
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (group_json) {
 
-        $.each(user_list, function (key, val) {
-            $(`<div class=\"user-name-container ${key}\">`).appendTo('#login-user-flex, #share-user-flex');
-            var txt = ""
-            txt += `<p class=\"user-name\">${val["user_name"]}</p>`
-            txt += "</div>"
+            console.log("success")
+            user_list = (group_json["data"]["user_list"]);
+            $.each(user_list, function (key, val) {
+                $(`<div class=\"user-name-container ${key}\">`).appendTo('#login-user-flex, #share-user-flex');
+                var txt = ""
+                txt += `<p class=\"user-name\">${val["user_name"]}</p>`
+                txt += "</div>"
 
-            $(`.${key}`).html(txt);
-        });
-    });
+                $(`.${key}`).html(txt);
+            });
+        },
+        error: function () {
+            console.log("error");
+        }
+    })
 }
 
 
 function loadGroupHistory() {
-    $.get('./group_data.json', function (json) {
-        group = json[groupID];
-        group_history = group["history"];
-        console.log(group_history);
-        prependGroupHistory(group_history);
-    });
+    $.ajax({
+        url: './get_group_data',
+        type: "POST",
+        data: JSON.stringify({
+            groupID: groupID
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (group_json) {
+
+            console.log("success")
+            prependGroupHistory(group_json["data"]["history"]);
+        },
+        error: function () {
+            console.log("error");
+        }
+    })
 
 }
 function prependGroupHistory(group_history) {
@@ -68,15 +91,38 @@ function prependGroupHistory(group_history) {
     });
 
 }
+
+function loadDebts() {
+    $.ajax({
+        url: './get_group_data',
+        type: "POST",
+        data: JSON.stringify({
+            groupID: groupID
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (group_json) {
+
+            console.log("success")
+            appendDebts(group_json["data"]["user_list"]);
+        },
+        error: function () {
+            console.log("error");
+        }
+    })
+}
+
 function appendDebts(user_list) {
     $('#paid .user-list-container').empty();
     $('#paid-container .d-list-container').empty();
     $('#payback .user-list-container').empty();
     $('#payback-container .d-list-container').empty();
+    $('#acc-history').empty();
 
     login_user_id = $('.login-user').attr('class').split(' ')[1]
     login_user_name = user_list[login_user_id]["user_name"]
     login_user_debts = user_list[login_user_id]["debts"]
+    login_user_debts_records = user_list[login_user_id]["debts_records"]
 
     total_debts = 0
     $.each(login_user_debts, function (user_id, price) {
@@ -121,14 +167,36 @@ function appendDebts(user_list) {
         }
     });
     $('.acc-debts').html(`TOTAL DEBTS: ${total_debts}`);
-}
 
-function loadDebts() {
-    $.get('./group_data.json', function (json) {
-        group = json[groupID];
-        user_list = group["user_list"];
-        appendDebts(user_list);
+    $.each(login_user_debts_records, function (index, records) {
+        dateTime = records["date_time"];
+        interactWith = records["interact_with"];
+        method = records["method"];
+        money = records["money"];
+
+
+        $(`<div class="history-grid"  id=his_${index}>`).prependTo('#acc-history');
+        var txt = ""
+        txt += "<div>"
+        txt += `<p class="time-stamp">${dateTime}</p>`
+        txt += "</div>"
+        txt += `<div class="user-name-container">`
+        txt += `<p class="user-name">${user_list[interactWith]["user_name"]}</p>`
+        txt += "</div>"
+        txt += "<div>"
+        if (method == "payback") {
+            txt += `<p class="describe">我已還 ${money} twd</p>`;
+        }
+        else if (method == "received") {
+            txt += `<p class="describe">我收到 ${money} twd</p>`;
+        }
+        txt += "</div>"
+        txt += "</div>"
+
+        $(`#his_${index}`).html(txt);
     });
+
+
 }
 
 $('#login-user-flex').on("click", ".user-name-container", function () {
@@ -200,7 +268,7 @@ $('#close-btn').click(function () {
     $('#add-items input').val('');
     $('#add-price input').val('');
 
-    $('#saveing-blur').css('display', 'none');
+    $('#saving-blur').css('display', 'none');
     $('#main-page').css('display', 'block');
     $('#add-page').fadeOut(500);
 })
@@ -303,7 +371,7 @@ function calculateShare() {
 }
 
 $('#save-btn-act').click(function () {
-    $('#saveing-blur').css('display', 'block');
+    $('#saving-blur').css('display', 'block');
 
     save_json = {
         "host": $('.login-user').attr('class').split(' ')[1],
@@ -347,27 +415,27 @@ $('#save-btn-act').click(function () {
         },
         error: function () {
             console.log("error");
-            $('#saveing-blur').css('display', 'none');
         }
     })
 
 })
 $('#payback-container').on('click', '.payback-btn', function () {
-    paybackName = $(this).siblings('.user-name-container').children('p').html();
-    paybackMoney = $(this).siblings('.total-cost').html().split(" ")[0].slice(1);
-    console.log(paybackMoney);
-    $('#payback-describe-container .user-name').html(paybackName);
-    $('#payback-describe-container input').val(paybackMoney);
+    receiveName = $(this).siblings('.user-name-container').children('p').html();
+    receiveMoney = $(this).siblings('.total-cost').html().split(" ")[0].slice(1);
+    receiveUserID = $(this).parent('.interact-user-container').attr('class').split(' ')[1];
+    $('#payback-describe-container .user-name-container').toggleClass(`${receiveUserID}`);
+    $('#payback-describe-container .user-name').html(receiveName);
+    $('#payback-describe-container input').val(receiveMoney);
 
     $('.transparent-blur').fadeIn(500);
     $('#payback-describe-container').css('display', 'flex');
 })
 
 $('#paid-container').on('click', '.received-btn', function () {
-    paidName = $(this).siblings('.user-name-container').children('p').html();
-    paidMoney = $(this).siblings('.total-cost').html().split(" ")[0];
+    paybackName = $(this).siblings('.user-name-container').children('p').html();
+    paybackMoney = $(this).siblings('.total-cost').html().split(" ")[0];
 
-    $('#share-container input').val(`${paidName}記得還我${paidMoney}元喔~`);
+    $('#share-container input').val(`${paybackName}記得還我${paybackMoney}元喔~`);
 
     $('.transparent-blur').fadeIn(500);
     $('#share-container').css('display', 'block');
@@ -378,43 +446,52 @@ $('.cancel-btn').click(function () {
     setTimeout(function () {
         $('#payback-describe-container .user-name').html('');
         $('.confirm-popoutinput').val('');
+        $('#payback-describe-container .user-name-container').attr('class', 'user-name-container');
     }, 400)
 })
 
 $('.confirm-btn').click(function () {
     if ($('#payback-describe-container').css('display') != 'none') {
-        paybackName = $('#payback-describe-container .user-name').html();
-        paybackMoney = $('#payback-describe-container input').val();
-        $('#share-container input').val(`${paybackName}我還你${paybackMoney}元了喔~`);
-        $('#payback-describe-container').fadeOut(500);
-        $('#share-container').fadeIn(500);
-        // $.ajax({
-        //     url: './save_record',
-        //     type: "POST",
-        //     data: JSON.stringify({
-        //         groupID: groupID,
-        //         date: today,
-        //         save_json: save_json
-        //     }),
-        //     contentType: "application/json; charset=utf-8",
-        //     dataType: "json",
-        //     success: function (group_json) {
+        receiveName = $('#payback-describe-container .user-name').html();
+        receiveMoney = $('#payback-describe-container input').val();
+        receiveUser = $('#payback-describe-container .user-name-container').attr('class').split(' ')[1];
+        paybackUser = $('.login-user').attr('class').split(' ')[1];
+        $('#saving-blur').css('display', 'block');
 
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var hh = String(today.getHours()).padStart(2, '0');
+        var min = String(today.getMinutes()).padStart(2, '0');
+        dateTime = mm + '-' + dd + ' ' + hh + ':' + min;
 
-        //         $('#close-btn').click();
-        //         console.log("success")
-        //         console.log(group_json);
-        //         group_history = group_json["data"]["history"];
-        //         user_list = group_json["data"]["user_list"];
+        $.ajax({
+            url: './save_debts',
+            type: "POST",
+            data: JSON.stringify({
+                groupID: groupID,
+                date_time: dateTime,
+                payback_user: paybackUser,
+                received_user: receiveUser,
+                money: receiveMoney
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (user_list_json) {
+                receiveName = $('#payback-describe-container .user-name').html();
+                receiveMoney = $('#payback-describe-container input').val();
+                $('#share-container input').val(`${receiveName}我還你${receiveMoney}元了喔~`);
+                $('#payback-describe-container').fadeOut(500);
+                $('#share-container').fadeIn(500);
+                $('#saving-blur').css('display', 'none');
 
-        //         prependGroupHistory(group_history);
-        //         appendDebts(user_list);
-        //     },
-        //     error: function () {
-        //         console.log("error");
-        //         $('#saveing-blur').css('display', 'none');
-        //     }
-        // })
+                console.log("success")
+                appendDebts(user_list_json["data"]);
+            },
+            error: function () {
+                console.log("error");
+            }
+        })
     }
     else if ($('#share-container').css('display') != 'none') {
         shareText = $('#share-container input').val();
