@@ -364,8 +364,6 @@ def handle_message(event):
         elif text == "現在去記":
             return
         else:
-            line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text='我看不懂QQ'))
             return
 
     if event.source.type == 'group':  # 群組功能
@@ -391,8 +389,6 @@ def handle_message(event):
             )
             return
         else:
-            line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text='我看不懂QQ'))
             return
 
 

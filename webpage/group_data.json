@@ -4,10 +4,10 @@
             "U9428941dc9c7fa6c078fed7751693cae": {
                 "user_name": "柏翔",
                 "debts": {
-                    "U8f335522faf69cb9f383eb830523db6b": 1466,
+                    "U8f335522faf69cb9f383eb830523db6b": 183,
                     "U9428941dc9c7fa6c078fed7751693cae": -34,
                     "U60bda6815f12204774d20b0388e242e2": 1666,
-                    "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 1466,
+                    "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 1649,
                     "U5f53c96c96290921f81978df828f7c84": 1666
                 },
                 "debts_records": {
@@ -88,17 +88,29 @@
                         "interact_with": "Ue8ba954b3a92b7bf3ef9691ef5c797b6",
                         "method": "payback",
                         "money": 450
+                    },
+                    "14": {
+                        "date_time": "06-24 21:18",
+                        "interact_with": "U8f335522faf69cb9f383eb830523db6b",
+                        "method": "received",
+                        "money": 1466
+                    },
+                    "15": {
+                        "date_time": "06-24 21:28",
+                        "interact_with": "U8f335522faf69cb9f383eb830523db6b",
+                        "method": "payback",
+                        "money": 20
                     }
                 }
             },
             "U8f335522faf69cb9f383eb830523db6b": {
                 "user_name": "怡蓉",
                 "debts": {
-                    "U9428941dc9c7fa6c078fed7751693cae": -1466,
-                    "U60bda6815f12204774d20b0388e242e2": 415,
+                    "U9428941dc9c7fa6c078fed7751693cae": -183,
+                    "U60bda6815f12204774d20b0388e242e2": 435,
                     "U8f335522faf69cb9f383eb830523db6b": -40,
-                    "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 0,
-                    "U5f53c96c96290921f81978df828f7c84": 25
+                    "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 20,
+                    "U5f53c96c96290921f81978df828f7c84": 45
                 },
                 "debts_records": {
                     "1": {
@@ -148,14 +160,26 @@
                         "interact_with": "Ue8ba954b3a92b7bf3ef9691ef5c797b6",
                         "method": "received",
                         "money": 413
+                    },
+                    "9": {
+                        "date_time": "06-24 21:18",
+                        "interact_with": "U9428941dc9c7fa6c078fed7751693cae",
+                        "method": "payback",
+                        "money": 1466
+                    },
+                    "10": {
+                        "date_time": "06-24 21:28",
+                        "interact_with": "U9428941dc9c7fa6c078fed7751693cae",
+                        "method": "received",
+                        "money": 20
                     }
                 }
             },
             "Ue8ba954b3a92b7bf3ef9691ef5c797b6": {
                 "user_name": "易成",
                 "debts": {
-                    "U8f335522faf69cb9f383eb830523db6b": 0,
-                    "U9428941dc9c7fa6c078fed7751693cae": -1466,
+                    "U8f335522faf69cb9f383eb830523db6b": -20,
+                    "U9428941dc9c7fa6c078fed7751693cae": -1649,
                     "U5f53c96c96290921f81978df828f7c84": 0,
                     "Ue8ba954b3a92b7bf3ef9691ef5c797b6": -60,
                     "U60bda6815f12204774d20b0388e242e2": 0
@@ -226,7 +250,7 @@
             "U5f53c96c96290921f81978df828f7c84": {
                 "user_name": "林玟其",
                 "debts": {
-                    "U8f335522faf69cb9f383eb830523db6b": -25,
+                    "U8f335522faf69cb9f383eb830523db6b": -45,
                     "U9428941dc9c7fa6c078fed7751693cae": -1666,
                     "U5f53c96c96290921f81978df828f7c84": 0,
                     "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 0,
@@ -268,7 +292,7 @@
             "U60bda6815f12204774d20b0388e242e2": {
                 "user_name": "怡安",
                 "debts": {
-                    "U8f335522faf69cb9f383eb830523db6b": -415,
+                    "U8f335522faf69cb9f383eb830523db6b": -435,
                     "U9428941dc9c7fa6c078fed7751693cae": -1666,
                     "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 0,
                     "U60bda6815f12204774d20b0388e242e2": -50,
@@ -572,6 +596,30 @@
                         "U8f335522faf69cb9f383eb830523db6b": 1333,
                         "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 1333,
                         "U5f53c96c96290921f81978df828f7c84": 1333
+                    }
+                },
+                "8": {
+                    "host": "U8f335522faf69cb9f383eb830523db6b",
+                    "category": "study",
+                    "items": "大家都100分",
+                    "price": 100,
+                    "share": {
+                        "U9428941dc9c7fa6c078fed7751693cae": 20,
+                        "U60bda6815f12204774d20b0388e242e2": 20,
+                        "U8f335522faf69cb9f383eb830523db6b": 20,
+                        "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 20,
+                        "U5f53c96c96290921f81978df828f7c84": 20
+                    }
+                },
+                "9": {
+                    "host": "U9428941dc9c7fa6c078fed7751693cae",
+                    "category": "food",
+                    "items": "網頁展示",
+                    "price": 550,
+                    "share": {
+                        "U9428941dc9c7fa6c078fed7751693cae": 184,
+                        "U8f335522faf69cb9f383eb830523db6b": 183,
+                        "Ue8ba954b3a92b7bf3ef9691ef5c797b6": 183
                     }
                 }
             }
