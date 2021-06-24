@@ -89,7 +89,9 @@ function prependGroupHistory(group_history) {
                 $(`#${date}_${index} .item-name`).css('width', containerWidth);
             }
             else if (containerWidth < itemWidth) {
-                $(`#${date}_${index} .user-name-container`).css('width', itemWidth - 22);
+                diff = (itemWidth - containerWidth) / 2;
+                $(`#${date}_${index} .user-name-container`).css('margin-left', diff);
+                $(`#${date}_${index} .user-name-container`).css('margin-right', diff);
             }
 
         });
