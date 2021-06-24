@@ -26,12 +26,15 @@
                     "data": "開始使用",
                     "displayText": "開始使用"
                 },
-                "style": "link"
+                "position": "relative",
+                "style": "primary",
+                "color": "#7A6A63",
+                "margin": "none"
             },
             {
                 "type": "separator",
-                "color": "#777777",
-                "margin": "none"
+                "color": "#FFFFFF",
+                "margin": "sm"
             },
             {
                 "type": "button",
@@ -40,11 +43,14 @@
                     "label": "前往分帳網站",
                     "uri": ""
                 },
+                "position": "relative",
+                "style": "primary",
+                "color": "#7A6A63",
                 "height": "sm",
-                "style": "link"
+                "margin": "none"
             }
         ],
         "flex": 0,
-        "backgroundColor": "#F0F0F0"
+        "backgroundColor": "#FFFFFF"
     }
 }
