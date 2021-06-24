@@ -21,6 +21,7 @@ from flask import Flask, request, abort, send_file
 # line bot api reference: https://github.com/line/line-bot-sdk-python
 
 app = Flask(__name__, static_folder='/')  # 建立 Flask 物件
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # disable cache
 
 config = configparser.ConfigParser()
 config.read('config.ini')
