@@ -91,7 +91,8 @@
                         <div class="user-name-container">
                             <p class="user-name"></p>
                         </div>
-                        <input type="number" placeholder="輸入金額" min="1" oninput="validity.valid||(value='');">
+                        <input type="number" placeholder="輸入金額" min="1" max="999999"
+                            oninput="validity.valid||(value='');">
                         <p>twd</p>
                     </div>
                     <div id="share-container">
@@ -160,12 +161,13 @@
             </div>
             <div id="add-items">
                 <img class="add-title" src="../image/add-items.png">
-                <input type="text" placeholder="請輸入項目(最多15字)..." maxlength="15">
+                <input type="text" placeholder="請輸入項目(最多10字)..." maxlength="10">
                 <div class="add-bot-border"></div>
             </div>
             <div id="add-price">
                 <img class="add-title" src="../image/add-price.png">
-                <input type="number" placeholder="輸入金額" min="1" oninput="validity.valid||(value='');">
+                <input type="number" placeholder="輸入金額(1~999999)" min="1" max="999999"
+                    oninput="validity.valid||(value='');">
                 <img id="twd" src="../image/twd.png">
                 <div class="add-bot-border"></div>
             </div>

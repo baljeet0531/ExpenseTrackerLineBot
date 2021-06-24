@@ -159,8 +159,9 @@ def save_record():
 
     for share_user, price in share.items():
         try:
-            data[group_id]["user_list"][host]["debts"][share_user] += int(
-                price)
+            if (host != share_user):
+                data[group_id]["user_list"][host]["debts"][share_user] += int(
+                    price)
             data[group_id]["user_list"][share_user]["debts"][host] -= int(
                 price)
         except:

@@ -83,16 +83,16 @@ function prependGroupHistory(group_history) {
 
             $(`#${date}_${index}`).html(txt);
 
-            containerWidth = parseFloat($(`#${date}_${index} .user-name-container`).css('width')) + 22;
-            itemWidth = parseFloat($(`#${date}_${index} .item-name`).css('width'));
-            if (containerWidth > itemWidth) {
-                $(`#${date}_${index} .item-name`).css('width', containerWidth);
-            }
-            else if (containerWidth < itemWidth) {
-                diff = (itemWidth - containerWidth) / 2;
-                $(`#${date}_${index} .user-name-container`).css('margin-left', diff);
-                $(`#${date}_${index} .user-name-container`).css('margin-right', diff);
-            }
+            // containerWidth = parseFloat($(`#${date}_${index} .user-name-container`).css('width')) + 22;
+            // itemWidth = parseFloat($(`#${date}_${index} .item-name`).css('width'));
+            // if (containerWidth > itemWidth) {
+            //     $(`#${date}_${index} .item-name`).css('width', containerWidth);
+            // }
+            // else if (containerWidth < itemWidth) {
+            //     diff = (itemWidth - containerWidth) / 2;
+            //     $(`#${date}_${index} .user-name-container`).css('margin-left', diff);
+            //     $(`#${date}_${index} .user-name-container`).css('margin-right', diff);
+            // }
 
         });
         $(`<p class=\"date\">${date}</p>`).prependTo(`.${date}`);
@@ -330,7 +330,7 @@ $('#share-user-flex').on("click", ".user-name-container", function () {
         txt += "</div>";
         txt += "</div>";
         txt += "<div id=\"edit-share-user-price\">";
-        txt += "<input type=\"number\" min=\"1\" oninput=\"validity.valid||(value='');\">";
+        txt += "<input type=\"number\" min=\"1\" max=\"999999\" oninput=\"validity.valid||(value='');\">";
         txt += "<p class=\"p-twd\">twd</p>";
         txt += "</div>";
         txt += "</div>"
