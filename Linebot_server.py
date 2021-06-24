@@ -9,6 +9,7 @@ import datetime
 import requests
 import os
 import json
+import re
 import configparser
 import urllib
 from linebot.models import *
@@ -41,13 +42,13 @@ def richmenu():
         line_bot_api = LineBotApi(channel_access_token)
 
         headers = {"Authorization": "Bearer " +
-                   channel_access_token, "Content-Type": "application/json"}
+                                    channel_access_token, "Content-Type": "application/json"}
         body = json.load(
             open('./richmenu/richmenu.json', 'r', encoding='utf-8'))
         req = requests.request(
             'POST', "https://api.line.me/v2/bot/richmenu", headers=headers, data=json.dumps(body).encode('utf-8'))
         a = req.text[15:56]
-        with open("./richmenu/richmenu.png", 'rb') as f:
+        with open("./richmenu/richmenu.jpg", 'rb') as f:
             line_bot_api.set_rich_menu_image(a, "image/jpeg", f)
         req = requests.request(
             'POST', 'https://api.line.me/v2/bot/user/all/richmenu/' + a, headers=headers)
@@ -191,6 +192,7 @@ def callback():
 
     return 'OK'
 
+
 # 收到語音訊息__記帳
 
 
@@ -200,13 +202,17 @@ def handle_message(event):
     a = lf.return_alert_data()[event.source.user_id]["audio"]
     print(a)
     if event.source.type == 'user':
-        a = int(a)+1
+        a = int(a) + 1
         lf.enter_alert_audio_data(event.source.user_id, str(a))
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text="記得記帳"))
 
 
 # 收到message event
+
+step = 0
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     print(event)  # 看event長怎樣
@@ -249,26 +255,31 @@ def handle_message(event):
             line_bot_api.reply_message(
                 event.reply_token, TextSendMessage(text="請點選「記帳推薦」進行分析後再來看結果噢"))
     elif text == "想換記帳程式":
-        with open('user_recommend_data.json', 'r', encoding='utf-8') as object:
-            u_r_d = json.load(object)
-
-        del u_r_d[event.source.user_id][app_recommend.total(
-            u_r_d[event.source.user_id])]
-
-        with open('user_recommend_data.json', "w", encoding='utf-8') as f:
-            json.dump(u_r_d, f, ensure_ascii=False, indent=4)
-
         with open('questionnaire_data.json', 'r', encoding='utf-8') as object:
             q_d = json.load(object)
-        app = app_recommend.total(u_r_d[event.source.user_id])
-        system = q_d[event.source.user_id]["你的手機系統?"]
-        with open('app_download_url.json', 'r', encoding='utf-8') as object:
-            a_d_u = json.load(object)
-        muilt_reply = []
-        muilt_reply.append(TextSendMessage(text="試試「" + app + "」去紀錄帳目如何？"))
-        muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
-        line_bot_api.reply_message(
-            event.reply_token, muilt_reply)
+
+        if event.source.user_id in q_d:
+            with open('user_recommend_data.json', 'r', encoding='utf-8') as object:
+                u_r_d = json.load(object)
+
+            del u_r_d[event.source.user_id][app_recommend.total(
+                u_r_d[event.source.user_id])]
+
+            with open('user_recommend_data.json', "w", encoding='utf-8') as f:
+                json.dump(u_r_d, f, ensure_ascii=False, indent=4)
+
+            app = app_recommend.total(u_r_d[event.source.user_id])
+            system = q_d[event.source.user_id]["你的手機系統?"]
+            with open('app_download_url.json', 'r', encoding='utf-8') as object:
+                a_d_u = json.load(object)
+            muilt_reply = []
+            muilt_reply.append(TextSendMessage(text="試試「" + app + "」去紀錄帳目如何？"))
+            muilt_reply.append(TextSendMessage(text=a_d_u[system][app]))
+            line_bot_api.reply_message(
+                event.reply_token, muilt_reply)
+        else:
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text="要先進行「記帳推薦結果」後才能給予新的程式回饋噢"))
 
     elif text == "記帳提醒":
         flex_message = lf.setting_alert_message()
@@ -279,6 +290,43 @@ def handle_message(event):
                 contents=flex_message)
         )
         lf.alert_data(event.source.user_id)
+
+    elif text == '需要欠債提醒！':  # 回傳提醒格式
+        global step
+        if step == 0:
+            flex_message = lf.setting_debt_message()
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text="需要欠債提醒！",
+                    contents=flex_message)
+            )
+            lf.debt_data(event.source.user_id)
+            print(step)
+            lf.enter_debt_count(event.source.user_id)
+            step = 1
+        else:
+            response = "請依照順序填寫欠債提醒！"
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=response))
+
+    elif text[0:5] == '我要記債：' or text[0:5] == '我要記債:':  # 回傳提醒時間選項
+        if step == 1:
+            flex_message = lf.debt_alerting_time()
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text="我要記債：",
+                    contents=flex_message)
+            )
+            lf.enter_debt_data_plus(
+                text=text, time='0', user_id=event.source.user_id)
+            print(step)
+            step = 2
+        else:
+            response = "請依照順序填寫欠債提醒！"
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=response))
 
     elif text == "網址":  # liff網址
         response = "https://liff.line.me/1656056998-RP6bYLXr"
@@ -324,27 +372,38 @@ def handle_message(event):
 
     elif text == "已經記了":
         lf.enter_alert_audio_data(event.source.user_id, "0")
+
+    elif text[0:5] == "處理完成第" and text[-1] == "筆":
+        num = text[5:-1]
+        lf.cancel_debt_data(event.source.user_id, num)
+        response = '收到！已幫您取消這筆提醒！'
+        line_bot_api.reply_message(
+            event.reply_token, TextSendMessage(text=response))
+
     elif text == "取消提醒":
         lf.cancel_alert(event.source.user_id)
+
     else:
         return
 
+
 # 收到Postback event
 
-
-@ handler.add(PostbackEvent)
+@handler.add(PostbackEvent)
 def handle_postback(event):
     print(event)
     postback = event.postback.data
 
+    time = event.postback.params
+
     if postback == "time":
-        time = event.postback.params
-        reply = "設定成功!將於每日"+time["time"]+"提醒你記帳!"
+        reply = "設定成功!將於每日" + time["time"] + "提醒你記帳!"
         lf.enter_alert_time_data(
-            user_id=event.source.user_id, tm=time["time"],)
+            user_id=event.source.user_id, tm=time["time"], )
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=reply))
     elif postback == "開始使用":
+        time = event.postback.params
         group_id = event.source.group_id
         user_id = event.source.user_id
         user_name = line_bot_api.get_profile(
@@ -355,9 +414,23 @@ def handle_postback(event):
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=reply))
 
+    if postback == "debt_alert":
+        global step
+        if step == 2:
+            lf.enter_debt_data_plus(
+                user_id=event.source.user_id, time=time["time"], text='0')
+            reply = lf.finish_debt_alert(user_id=event.source.user_id)
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=reply))
+            step = 0
+        else:
+            response = "請依照順序填寫欠債提醒！"
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=response))
+
 
 # 收到join event
-@ handler.add(JoinEvent)
+@handler.add(JoinEvent)
 def handle_join(event):
     reply_text = "大家好~我是你們的記帳幫手，在群組中可以替大家完成分帳的任務喔!!\n記得先點選\"開始使用\"在網頁中才看的到妳的名字呦!!"
 
@@ -386,18 +459,41 @@ def handle_join(event):
 
 
 def alert():
+
     while lf.get_alert_time_user():
 
-        alert_id, audio_id = lf.get_alert_time_user()
+        alert_id, audio_id, debt_user, content, num = lf.get_alert_time_user()
+        count = 0
 
         try:
+            for i in debt_user:
+                text = '記得處理這筆欠債喔：\n{}'.format(content[count])
+                line_bot_api.push_message(i, TemplateSendMessage(
+                    alt_text='Debt Confirm template',
+                    template=ConfirmTemplate(
+                        text=text,
+                        actions=[
+                            MessageAction(
+                                label='處理完成',
+                                text='處理完成第{}筆'.format(num[count])
+                            ),
+                            MessageAction(
+                                label='晚點處理',
+                                text='晚點處理第{}筆'.format(num[count])
+                            )
+                        ]
+                    )
+                ))
+                count += 1
+
             for i in alert_id:
+
                 flex_message = lf.setting_check_message()
                 line_bot_api.push_message(i, FlexSendMessage(
                     alt_text='記得每天記帳喲~',
                     contents=flex_message))
-            for i in audio_id:
 
+            for i in audio_id:
                 mess = "你還有{}筆語音還沒紀錄".format(
                     lf.return_alert_data()[i]["audio"])
                 line_bot_api.push_message(i, TemplateSendMessage(

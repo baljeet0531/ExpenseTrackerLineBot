@@ -102,8 +102,8 @@
             "type": "button",
             "action": {
               "type": "message",
-              "label": "輸入欠債內容",
-              "text": "輸入欠債內容"
+              "label": "新增一筆欠債",
+              "text": "需要欠債提醒！"
             },
             "style": "primary",
             "color": "#7A6A63",
