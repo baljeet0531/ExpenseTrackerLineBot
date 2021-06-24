@@ -9,6 +9,7 @@ import datetime
 import requests
 import os
 import json
+import re
 import configparser
 from linebot.models import *
 from linebot.exceptions import InvalidSignatureError
@@ -28,7 +29,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://0044b08e246f.ngrok.io'
+ngrok_url = 'https://3786904361a7.ngrok.io'
 
 
 # 載入richmenu
@@ -39,7 +40,7 @@ def richmenu():
         line_bot_api = LineBotApi(channel_access_token)
 
         headers = {"Authorization": "Bearer " +
-                   channel_access_token, "Content-Type": "application/json"}
+                                    channel_access_token, "Content-Type": "application/json"}
         body = json.load(
             open('./richmenu/richmenu.json', 'r', encoding='utf-8'))
         req = requests.request(
@@ -71,6 +72,7 @@ def callback():
 
     return 'OK'
 
+
 # 收到語音訊息__記帳
 
 
@@ -80,13 +82,14 @@ def handle_message(event):
     a = lf.return_alert_data()[event.source.user_id]["audio"]
     print(a)
     if event.source.type == 'user':
-        a = int(a)+1
+        a = int(a) + 1
         lf.enter_alert_audio_data(event.source.user_id, str(a))
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text="記得記帳"))
 
 
 # 收到message event
+step = 0
 
 
 @handler.add(MessageEvent, message=TextMessage)
@@ -128,6 +131,44 @@ def handle_message(event):
         )
         lf.alert_data(event.source.user_id)
 
+    elif text == '需要欠債提醒！':  # 回傳提醒格式
+        global step
+        if step == 0:
+            flex_message = lf.setting_debt_message()
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text="需要欠債提醒！",
+                    contents=flex_message)
+            )
+            lf.debt_data(event.source.user_id)
+            print(step)
+            lf.enter_debt_count(event.source.user_id)
+            step = 1
+        else:
+            response = "請依照順序填寫欠債提醒！"
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=response))
+
+
+    elif text[0:5] == '我要記債：' or text[0:5] == '我要記債:':  # 回傳提醒時間選項
+        if step == 1:
+            flex_message = lf.debt_alerting_time()
+            line_bot_api.reply_message(
+                event.reply_token,
+                FlexSendMessage(
+                    alt_text="我要記債：",
+                    contents=flex_message)
+            )
+            lf.enter_debt_data_plus(text=text, time='0', user_id=event.source.user_id)
+            print(step)
+            step = 2
+        else:
+            response = "請依照順序填寫欠債提醒！"
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=response))
+
+
     elif text == "網址":  # liff網址
         response = "https://liff.line.me/1656056998-RP6bYLXr"
         line_bot_api.reply_message(
@@ -153,8 +194,8 @@ def handle_message(event):
             flex_message = lf.setting_flex_message()
             # set action uri of flex message
             flex_message["footer"]["contents"][0]["action"]["uri"] = ngrok_url + \
-                '/webpage/index.html?groupId=' + group_id + \
-                '&userId=' + user_id + '&userName=' + user_name
+                                                                     '/webpage/index.html?groupId=' + group_id + \
+                                                                     '&userId=' + user_id + '&userName=' + user_name
             # send flex message to user
             line_bot_api.reply_message(
                 event.reply_token,
@@ -180,28 +221,50 @@ def handle_message(event):
 
     elif text == "已經記了":
         lf.enter_alert_audio_data(event.source.user_id, "0")
+
+    elif text[0:5] == "處理完成第" and text[-1] == "筆":
+        num = text[5:-1]
+        lf.cancel_debt_data(event.source.user_id, num)
+        response = '收到！已幫您取消這筆提醒！'
+        line_bot_api.reply_message(
+            event.reply_token, TextSendMessage(text=response))
+
     else:
         return
 
+
 # 收到Postback event
 
-
-@ handler.add(PostbackEvent)
+@handler.add(PostbackEvent)
 def handle_postback(event):
     print(event)
     postback = event.postback.data
     time = event.postback.params
-
     if postback == "time":
-        reply = "設定成功!將於每日"+time["time"]+"提醒你記帳!"
+        reply = "設定成功!將於每日" + time["time"] + "提醒你記帳!"
         lf.enter_alert_time_data(
-            user_id=event.source.user_id, tm=time["time"],)
+            user_id=event.source.user_id, tm=time["time"], )
         line_bot_api.reply_message(
             event.reply_token, TextSendMessage(text=reply))
 
+    if postback == "debt_alert":
+        global step
+        if step == 2:
+            lf.enter_debt_data_plus(
+                user_id=event.source.user_id, time=time["time"], text='0')
+            reply = lf.finish_debt_alert(user_id=event.source.user_id)
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=reply))
+            step = 0
+        else:
+            response = "請依照順序填寫欠債提醒！"
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text=response))
+
+
 
 # 收到join event
-@ handler.add(JoinEvent)
+@handler.add(JoinEvent)
 def handle_join(event):
     print(event)
     # reply image message
@@ -214,73 +277,82 @@ def handle_join(event):
 
 
 def alert():
+
     while lf.get_alert_time_user():
 
-        alert_id, audio_id = lf.get_alert_time_user()
-        # print(user_id)
+        alert_id, audio_id, debt_user, content, num = lf.get_alert_time_user()
+        count = 0
 
         try:
+            for i in debt_user:
+                text = '記得處理這筆欠債喔：\n{}'.format(content[count])
+                line_bot_api.push_message(i, TemplateSendMessage(
+                    alt_text='Debt Confirm template',
+                    template=ConfirmTemplate(
+                        text=text,
+                        actions=[
+                            MessageAction(
+                                label='處理完成',
+                                text='處理完成第{}筆'.format(num[count])
+                            ),
+                            MessageAction(
+                                label='晚點處理',
+                                text='晚點處理第{}筆'.format(num[count])
+                            )
+                        ]
+                    )
+                ))
+                count += 1
+
             for i in alert_id:
                 line_bot_api.push_message(i, TextSendMessage(text='記得每天記帳呦!'))
-                # break
-            # break
-            for i in audio_id:
 
+            for i in audio_id:
                 mess = "你還有{}筆語音還沒紀錄".format(
                     lf.return_alert_data()[i]["audio"])
                 line_bot_api.push_message(i, TemplateSendMessage(
-                                          alt_text='Confirm template',
-                                          template=ConfirmTemplate(
-                                              text=mess,
-                                              actions=[
-                                                  MessageAction(
-                                                      label='已經記了',
-                                                      text='已經記了'
-                                                  ),
-                                                  MessageAction(
-                                                      label='等等再說',
-                                                      text='等等再說'
-                                                  )
-                                              ]
-                                          )
-                                          ))
-                break
+                    alt_text='Confirm template',
+                    template=ConfirmTemplate(
+                        text=mess,
+                        actions=[
+                            MessageAction(
+                                label='已經記了',
+                                text='已經記了'
+                            ),
+                            MessageAction(
+                                label='等等再說',
+                                text='等等再說'
+                            )
+                        ]
+                    )
+                ))
             break
         except:
             pass
 
 
+'''
+    def debt_alert():
+        while lf.get_debt_alert_time_user():
+            user, content = lf.get_debt_alert_time_user()
+            try:
+                for i in user:
+                text = '記得處理這筆欠債喔：' + content(i)
+                print(content(i))
+                line_bot_api.push_message(i, TextSendMessage(text=text))
+
+
+        except:
+            pass
+            
+'''
+
+
 if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
     sched = BackgroundScheduler()
-    sched.add_job(alert, 'cron', second=59)
+    sched.add_job(alert, 'cron', second=0)
     sched.start()
 
-
-def check():
-    while lf.get_audio_user():
-        now = time.ctime().split(" ")[3][:5]
-        if now == "22:32":
-            user_id = lf.get_audio_user()
-            template_message = lf.setting_check_message()
-            for i in user_id:
-                line_bot_api.push_message(i,
-                                          TemplateSendMessage(
-                                              alt_text='Confirm template',
-                                              template=ConfirmTemplate(
-                                                  text='Are you sure?',
-                                                  actions=[
-                                                      MessageAction(
-                                                          label='已經記了',
-                                                          text='yes'
-                                                      ),
-                                                      MessageAction(
-                                                          label='等等再說',
-                                                          text='no'
-                                                      )
-                                                  ]
-                                              )
-                                          ))
-    time.sleep(59)
 
 
 if __name__ == "__main__":
