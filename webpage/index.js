@@ -66,6 +66,9 @@ function prependGroupHistory(group_history) {
             var host_name = $(`.${host} p`).html();
             var price = recordInfo["price"];
             var myShare = recordInfo["share"][login_user_id];
+            if (myShare == null) {
+                myShare = 0;
+            }
 
             var txt = ""
             txt += `<img class=\"category-icon\" src=\"../image/${category}.png\">`
@@ -79,6 +82,16 @@ function prependGroupHistory(group_history) {
             txt += "</div>"
 
             $(`#${date}_${index}`).html(txt);
+
+            containerWidth = parseFloat($(`#${date}_${index} .user-name-container`).css('width')) + 22;
+            itemWidth = parseFloat($(`#${date}_${index} .item-name`).css('width'));
+            if (containerWidth > itemWidth) {
+                $(`#${date}_${index} .item-name`).css('width', containerWidth);
+            }
+            else if (containerWidth < itemWidth) {
+                $(`#${date}_${index} .user-name-container`).css('width', itemWidth - 22);
+            }
+
         });
         $(`<p class=\"date\">${date}</p>`).prependTo(`.${date}`);
     });
@@ -217,7 +230,7 @@ $('#welcome-btn').click(function () {
 
         $('.login-user').clone().appendTo('#pay-user-flex');
 
-        $('.acc-name').html(`${$('.login-user p').html()}'S ACCOUNTS`);
+        $('.acc-name').html(`${$('.login-user p').html()}'s Accounts`);
     }
 })
 
@@ -372,13 +385,13 @@ $('#save-btn-act').click(function () {
             "host": $('.login-user').attr('class').split(' ')[1],
             "category": $('.select-cate').attr('id'),
             "items": $('#add-items input').val(),
-            "price": $('#add-price input').val(),
+            "price": parseInt($('#add-price input').val()),
             "share": {}
         }
 
         $('#edit-share-user-container').children().each(function () {
             var userID = $(this).attr('class').split(' ')[1];
-            save_json["share"][userID] = $(this).find('input').val();
+            save_json["share"][userID] = parseInt($(this).find('input').val());
         });
 
         var today = new Date();
@@ -474,7 +487,7 @@ $('.confirm-btn').click(function () {
             dataType: "json",
             success: function (user_list_json) {
                 receiveName = $('#payback-describe-container .user-name').html();
-                receiveMoney = $('#payback-describe-container input').val();
+                receiveMoney = parseInt($('#payback-describe-container input').val());
                 $('#share-container input').val(`${receiveName}我還你${receiveMoney}元了喔~`);
                 $('#payback-describe-container').fadeOut(500);
                 $('#share-container').fadeIn(500);

@@ -25,12 +25,14 @@
             <img id="eng-title" src="../image/eng-title.png">
             <img id="app-icon" src="../image/app_icon.png">
             <img id="chn-title" src="../image/chn-title.png">
+            <p id="ask">請問您是哪位成員？</p>
+            <div id="login-user-container">
+                <div id="login-user-flex">
+                </div>
+            </div>
             <img id="welcome-btn" src="../image/welcome.png">
         </div>
-        <div id="login-user-container">
-            <div id="login-user-flex">
-            </div>
-        </div>
+
     </div>
     <div id="info-page">
         <div id="main-page">
@@ -89,8 +91,7 @@
                         <div class="user-name-container">
                             <p class="user-name"></p>
                         </div>
-                        <input type="number" placeholder="輸入金額" min="1"
-                            oninput="validity.valid||(value='');value=Number(value).toString();">
+                        <input type="number" placeholder="輸入金額" min="1" oninput="validity.valid||(value='');">
                         <p>twd</p>
                     </div>
                     <div id="share-container">
@@ -164,8 +165,7 @@
             </div>
             <div id="add-price">
                 <img class="add-title" src="../image/add-price.png">
-                <input type="number" placeholder="輸入金額" min="1"
-                    oninput="validity.valid||(value='');value=Number(value).toString();">
+                <input type="number" placeholder="輸入金額" min="1" oninput="validity.valid||(value='');">
                 <img id="twd" src="../image/twd.png">
                 <div class="add-bot-border"></div>
             </div>

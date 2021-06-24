@@ -78,7 +78,7 @@ def save_debts():
     date_time = body["date_time"]
     payback_user = body["payback_user"]
     received_user = body["received_user"]
-    money = body["money"]
+    money = int(body["money"])
 
     with open("./webpage/group_data.json", "r", encoding='utf-8') as f:
         data = json.load(f)
