@@ -11,44 +11,59 @@ def setting_flex_message():
     flex_message = json.load(
         open('./flex_message/group_feature.json', 'r', encoding='utf-8'))
     return flex_message
+
+
 def setting_alert_message():
     flex_message = json.load(
         open('./flex_message/alert.json', 'r', encoding='utf-8'))
     return flex_message
+
 def setting_check_message():
-    template_message = json.load(
-        open('./template_message/check.json', 'r', encoding='utf-8'))
-    return template_message
+    flex_message = json.load(
+        open('./flex_message/alert_check.json', 'r', encoding='utf-8'))
+    return flex_message
+
+def setting_recommend_message():
+    recommend_message = json.load(
+        open('./flex_message/recommend.json', 'r', encoding='utf-8'))
+    return recommend_message
+
 def alert_data(user_id):
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
-        data= json.load(f, strict=False)
+        data = json.load(f, strict=False)
     if user_id not in data:
-        data[user_id]= {
-            "time":"tm",
-            "audio":"0"
+        data[user_id] = {
+            "time": "tm",
+            "audio": "0"
         }
     with open('./alert_data.json', "w", encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False,indent=4)
-def enter_alert_time_data(tm,user_id):
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+def enter_alert_time_data(tm, user_id):
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
-        data= json.load(f, strict=False)
-    data[user_id]["time"]= tm
+        data = json.load(f, strict=False)
+    data[user_id]["time"] = tm
     with open('./alert_data.json', "w", encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False,indent=4)
-def enter_alert_audio_data(user_id,aud):
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+def enter_alert_audio_data(user_id, aud):
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
-        data= json.load(f, strict=False)
+        data = json.load(f, strict=False)
     data[user_id]["audio"] = aud
     with open('./alert_data.json', "w", encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False,indent=4)
+
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
 def get_alert_time_user():
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
-        data= json.load(f, strict=False)
+        data = json.load(f, strict=False)
     now = time.ctime().split(" ")[3][:5]
-    user=[]
-    user2=[]
+    user = []
+    user2 = []
     for i in data:
-        if data[i]["time"]==now:
+        if data[i]["time"] == now:
             user.append(i)
             if data[i]["audio"]!="0":
                user2.append(i)
@@ -65,26 +80,35 @@ def get_alert_time_user():
                 content.append(data2[i][n]['content'])
                 num.append(n)
     return user,user2,debt_user,content, num
+
 def get_audio_user():
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
         data = json.load(f, strict=False)
-    user=[]
+    user = []
     for i in data:
         if data[i]["audio"] != "0":
-           user.append(i)
+            user.append(i)
 
     return user
 
-def return_alert_data():
+def cancel_alert(user_id):
     with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
         data= json.load(f, strict=False)
-    return data
+    for i in data:
+        if i==user_id:
+            data[i]["time"]="tm"
+        with open('./alert_data.json', "w", encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
 
 def setting_debt_message():
     flex_message = json.load(
         open('./flex_message/debt.json', 'r', encoding='utf-8'))
     return flex_message
 
+def return_alert_data():
+    with open("./alert_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
+        data = json.load(f, strict=False)
+    return data
 
 def debt_data(user_id):
     with open("./debt_data.json", "r", encoding='utf-8-sig', errors='ignore') as f:
@@ -153,16 +177,32 @@ def get_debt_alert_time_user():
     return user, content
 
 
+
+def register_to_group_data(group_id, user_id, user_name):
+    with open("./webpage/group_data.json", "r", encoding='utf-8') as f:
+        data = json.load(f)
+    if group_id not in data:
+        data[group_id] = {
+            "user_list": {
+            },
+            "history": {
+            }
+        }
+
+    if user_id not in data[group_id]["user_list"]:
+        data[group_id]["user_list"][user_id] = {
+            'user_name': user_name,
+            "debts": {}
+        }
+        reply = user_name + "成功註冊"
+    else:
+        reply = user_name + "已註冊過"
+
+    with open("./webpage/group_data.json", "w", encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+    return reply
+
+
 if __name__ == "__main__":
-    #print(get_audio_user())
-    debt_data("U9f1523bf3ce0f0faeb481d617b865633")
-    #enter_debt_data_plus('helloddddd', '13:00', '1234')
-    get_alert_time_user()
-
-
-
-
-
-
-
-
+    print(get_audio_user())
