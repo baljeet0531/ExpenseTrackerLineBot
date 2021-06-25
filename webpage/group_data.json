@@ -771,5 +771,14 @@
                 }
             }
         }
+    },
+    "C1d8c19b4f9d608e8c4cc480068111119": {
+        "user_list": {
+            "U787e404ce0bac50d4f94938980ce1c26": {
+                "user_name": "易成",
+                "debts": {}
+            }
+        },
+        "history": {}
     }
 }
