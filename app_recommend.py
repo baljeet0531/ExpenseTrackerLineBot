@@ -107,10 +107,18 @@ def judgement(id):
         json.dump(user_recommend, object, ensure_ascii=False, indent=4)
     return total(dic1)
 
-
+'''
+在功能性、易上手性、美感、即時性、趣味性的運算邏輯上，依照使用者填寫不同的重視程度（導致number有1至5的差別）會給予此11個APP不同大小的分數範圍。
+若number為5，則APP的分數範圍為1~11（因為總共有11個APP）；若number為4，則APP的分數範圍為1~9；若number為3，則APP的分數範圍為1~7，以此類推。
+'''
 def functionality(number, dic1):  # 功能性
+    '''
+    功能性我們依照以下各個APP具備的記帳功能數量去做比較，分出功能數量多到少的APP有8個等第。
+    功能數量最少者為1分，每提升一等第加10/7分。
+    不同number對應的等第加分就不同。
+    '''
     if number == "5":
-        dic1["CW money(付費版)"] += 7
+        dic1["CW money(付費版)"] += 1 + 7 * 10 / 7
         dic1["CW money(免費版)"] += 1 + 6 * 10 / 7
         dic1["MOZE3.0(付費版)"] += 1 + 6 * 10 / 7
         dic1["MOZE3.0(免費版)"] += 1 + 5 * 10 / 7
@@ -186,85 +194,86 @@ def functionality(number, dic1):  # 功能性
         dic1["Spendee Budget & Money Tracker"] += 1
 
 
-def conv(number, dic1):  # 易上手性
+def conv(number, dic1):  # 易上手性，透過表單調查出的介面清楚分數來當作評判標準。
+
     if number == "5":
-        dic1["簡單記帳"] += 11
-        dic1["MOZE3.0(免費版)"] += 10
-        dic1["MOZE3.0(付費版)"] += 10
-        dic1["Ahorro"] += 9
-        dic1["理財幫手 AndroMoney"] += 8
-        dic1["天天記帳"] += 7
-        dic1["記帳雞"] += 6
-        dic1["Spendee Budget & Money Tracker"] += 5
-        dic1["CW money(免費版)"] += 4
-        dic1["CW money(付費版)"] += 4
-        dic1["卡娜赫拉家計簿"] += 3
-        dic1["記帳城市(免費版)"] += 2
-        dic1["記帳城市(付費版)"] += 2
+        dic1["簡單記帳"] += 1 + 10 * 1
+        dic1["MOZE3.0(免費版)"] += 1 + 9 * 1
+        dic1["MOZE3.0(付費版)"] += 1 + 9 * 1
+        dic1["Ahorro"] += 1 + 8 * 1
+        dic1["理財幫手 AndroMoney"] += 1 + 7 * 1
+        dic1["天天記帳"] += 1 + 6 * 1
+        dic1["記帳雞"] += 1 + 5 * 1
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 1
+        dic1["CW money(免費版)"] += 1 + 3 * 1
+        dic1["CW money(付費版)"] += 1 + 3 * 1
+        dic1["卡娜赫拉家計簿"] += 1 + 2 * 1
+        dic1["記帳城市(免費版)"] += 1 + 1 * 1
+        dic1["記帳城市(付費版)"] += 1 + 1 * 1
         dic1["碎碎念記帳"] += 1
     elif number == "4":
-        dic1["簡單記帳"] += 9
-        dic1["MOZE3.0(免費版)"] += 8.2
-        dic1["MOZE3.0(付費版)"] += 8.2
-        dic1["Ahorro"] += 7.4
-        dic1["理財幫手 AndroMoney"] += 6.6
-        dic1["天天記帳"] += 5.8
-        dic1["記帳雞"] += 5
-        dic1["Spendee Budget & Money Tracker"] += 4.2
-        dic1["CW money(免費版)"] += 3.4
-        dic1["CW money(付費版)"] += 3.4
-        dic1["卡娜赫拉家計簿"] += 2.6
-        dic1["記帳城市(免費版)"] += 1.8
-        dic1["記帳城市(付費版)"] += 1.8
+        dic1["簡單記帳"] += 1 + 10 * 0.8
+        dic1["MOZE3.0(免費版)"] += 1 + 9 * 0.8
+        dic1["MOZE3.0(付費版)"] += 1 + 9 * 0.8
+        dic1["Ahorro"] += 1 + 8 * 0.8
+        dic1["理財幫手 AndroMoney"] += 1 + 7 * 0.8
+        dic1["天天記帳"] += 1 + 6 * 0.8
+        dic1["記帳雞"] += 1 + 5 * 0.8
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 0.8
+        dic1["CW money(免費版)"] += 1 + 3 * 0.8
+        dic1["CW money(付費版)"] += 1 + 3 * 0.8
+        dic1["卡娜赫拉家計簿"] += 1 + 2 * 0.8
+        dic1["記帳城市(免費版)"] += 1 + 1 * 0.8
+        dic1["記帳城市(付費版)"] += 1 + 1 * 0.8
         dic1["碎碎念記帳"] += 1
     elif number == "3":
-        dic1["簡單記帳"] += 7
-        dic1["MOZE3.0(免費版)"] += 6.4
-        dic1["MOZE3.0(付費版)"] += 6.4
-        dic1["Ahorro"] += 5.8
-        dic1["理財幫手 AndroMoney"] += 5.2
-        dic1["天天記帳"] += 4.6
-        dic1["記帳雞"] += 4
-        dic1["Spendee Budget & Money Tracker"] += 3.4
-        dic1["CW money(免費版)"] += 2.8
-        dic1["CW money(付費版)"] += 2.8
-        dic1["卡娜赫拉家計簿"] += 2.2
-        dic1["記帳城市(免費版)"] += 1.6
-        dic1["記帳城市(付費版)"] += 1.6
+        dic1["簡單記帳"] += 1 + 10 * 0.6
+        dic1["MOZE3.0(免費版)"] += 1 + 9 * 0.6
+        dic1["MOZE3.0(付費版)"] += 1 + 9 * 0.6
+        dic1["Ahorro"] += 1 + 8 * 0.6
+        dic1["理財幫手 AndroMoney"] += 1 + 7 * 0.6
+        dic1["天天記帳"] += 1 + 6 * 0.6
+        dic1["記帳雞"] += 1 + 5 * 0.6
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 0.6
+        dic1["CW money(免費版)"] += 1 + 3 * 0.6
+        dic1["CW money(付費版)"] += 1 + 3 * 0.6
+        dic1["卡娜赫拉家計簿"] += 1 + 2 * 0.6
+        dic1["記帳城市(免費版)"] += 1 + 1 * 0.6
+        dic1["記帳城市(付費版)"] += 1 + 1 * 0.6
         dic1["碎碎念記帳"] += 1
     elif number == "2":
-        dic1["簡單記帳"] += 5
-        dic1["MOZE3.0(免費版)"] += 4.6
-        dic1["MOZE3.0(付費版)"] += 4.6
-        dic1["Ahorro"] += 4.2
-        dic1["理財幫手 AndroMoney"] += 3.8
-        dic1["天天記帳"] += 3.4
-        dic1["記帳雞"] += 3
-        dic1["Spendee Budget & Money Tracker"] += 2.6
-        dic1["CW money(免費版)"] += 2.2
-        dic1["CW money(付費版)"] += 2.2
-        dic1["卡娜赫拉家計簿"] += 1.8
-        dic1["記帳城市(免費版)"] += 1.4
-        dic1["記帳城市(付費版)"] += 1.4
+        dic1["簡單記帳"] += 1 + 10 * 0.4
+        dic1["MOZE3.0(免費版)"] += 1 + 9 * 0.4
+        dic1["MOZE3.0(付費版)"] += 1 + 9 * 0.4
+        dic1["Ahorro"] += 1 + 8 * 0.4
+        dic1["理財幫手 AndroMoney"] += 1 + 7 * 0.4
+        dic1["天天記帳"] += 1 + 6 * 0.4
+        dic1["記帳雞"] += 1 + 5 * 0.4
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 0.4
+        dic1["CW money(免費版)"] += 1 + 3 * 0.4
+        dic1["CW money(付費版)"] += 1 + 3 * 0.4
+        dic1["卡娜赫拉家計簿"] += 1 + 2 * 0.4
+        dic1["記帳城市(免費版)"] += 1 + 1 * 0.4
+        dic1["記帳城市(付費版)"] += 1 + 1 * 0.4
         dic1["碎碎念記帳"] += 1
     elif number == "1":
-        dic1["簡單記帳"] += 3
-        dic1["MOZE3.0(免費版)"] += 2.8
-        dic1["MOZE3.0(付費版)"] += 2.8
-        dic1["Ahorro"] += 2.6
-        dic1["理財幫手 AndroMoney"] += 2.4
-        dic1["天天記帳"] += 2.2
-        dic1["記帳雞"] += 2
-        dic1["Spendee Budget & Money Tracker"] += 1.8
-        dic1["CW money(免費版)"] += 1.6
-        dic1["CW money(付費版)"] += 1.6
-        dic1["卡娜赫拉家計簿"] += 1.4
-        dic1["記帳城市(免費版)"] += 1.2
-        dic1["記帳城市(付費版)"] += 1.2
+        dic1["簡單記帳"] += 1 + 10 * 0.2
+        dic1["MOZE3.0(免費版)"] += 1 + 9 * 0.2
+        dic1["MOZE3.0(付費版)"] += 1 + 9 * 0.2
+        dic1["Ahorro"] += 1 + 8 * 0.2
+        dic1["理財幫手 AndroMoney"] += 1 + 7 * 0.2
+        dic1["天天記帳"] += 1 + 6 * 0.2
+        dic1["記帳雞"] += 1 + 5 * 0.2
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 0.2
+        dic1["CW money(免費版)"] += 1 + 3 * 0.2
+        dic1["CW money(付費版)"] += 1 + 3 * 0.2
+        dic1["卡娜赫拉家計簿"] += 1 + 2 * 0.2
+        dic1["記帳城市(免費版)"] += 1 + 1 * 0.2
+        dic1["記帳城市(付費版)"] += 1 + 1 * 0.2
         dic1["碎碎念記帳"] += 1
 
 
-def immediacy(number, dic1):  # 即時性
+def immediacy(number, dic1):  # 即時性，我們針對有「widget記帳功能」的APP定義為最有即時性，因此有其功能則會加分。
     if number == "5":
         dic1["CW money(免費版)"] += 11
         dic1["CW money(付費版)"] += 11
@@ -289,113 +298,119 @@ def immediacy(number, dic1):  # 即時性
 
 def beauty(number, dic1):  # 美觀
     if number == "5":
-        dic1["記帳城市(免費版)"] += 11
-        dic1["記帳城市(付費版)"] += 11
-        dic1["卡娜赫拉家計簿"] += 10
-        dic1["簡單記帳"] += 9
-        dic1["MOZE3.0(免費版)"] += 8
-        dic1["MOZE3.0(付費版)"] += 8
-        dic1["記帳雞"] += 7
-        dic1["Ahorro"] += 6
-        dic1["Spendee Budget & Money Tracker"] += 5
-        dic1["理財幫手 AndroMoney"] += 4
-        dic1["天天記帳"] += 3
-        dic1["碎碎念記帳"] += 2
+        dic1["記帳城市(免費版)"] += 1 + 10 * 1
+        dic1["記帳城市(付費版)"] += 1 + 10 * 1
+        dic1["卡娜赫拉家計簿"] += 1 + 9 * 1
+        dic1["簡單記帳"] += 1 + 8 * 1
+        dic1["MOZE3.0(免費版)"] += 1 + 7 * 1
+        dic1["MOZE3.0(付費版)"] += 1 + 7 * 1
+        dic1["記帳雞"] += 1 + 6 * 1
+        dic1["Ahorro"] += 1 + 5 * 1
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 1
+        dic1["理財幫手 AndroMoney"] += 1 + 3 * 1
+        dic1["天天記帳"] += 1 + 2 * 1
+        dic1["碎碎念記帳"] += 1 + 1 * 1
         dic1["CW money(免費版)"] += 1
         dic1["CW money(付費版)"] += 1
     elif number == "4":
-        dic1["記帳城市(免費版)"] += 9
-        dic1["記帳城市(付費版)"] += 9
-        dic1["卡娜赫拉家計簿"] += 8.2
-        dic1["簡單記帳"] += 7.4
-        dic1["MOZE3.0(免費版)"] += 6.6
-        dic1["MOZE3.0(付費版)"] += 6.6
-        dic1["記帳雞"] += 5.8
-        dic1["Ahorro"] += 5
-        dic1["Spendee Budget & Money Tracker"] += 4.2
-        dic1["理財幫手 AndroMoney"] += 3.4
-        dic1["天天記帳"] += 2.6
-        dic1["碎碎念記帳"] += 1.8
+        dic1["記帳城市(免費版)"] += 1 + 10 * 0.8
+        dic1["記帳城市(付費版)"] += 1 + 10 * 0.8
+        dic1["卡娜赫拉家計簿"] += 1 + 9 * 0.8
+        dic1["簡單記帳"] += 1 + 8 * 0.8
+        dic1["MOZE3.0(免費版)"] += 1 + 7 * 0.8
+        dic1["MOZE3.0(付費版)"] += 1 + 7 * 0.8
+        dic1["記帳雞"] += 1 + 6 * 0.8
+        dic1["Ahorro"] += 1 + 5 * 0.8
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 0.8
+        dic1["理財幫手 AndroMoney"] += 1 + 3 * 0.8
+        dic1["天天記帳"] += 1 + 2 * 0.8
+        dic1["碎碎念記帳"] += 1 + 1 * 0.8
         dic1["CW money(免費版)"] += 1
         dic1["CW money(付費版)"] += 1
     elif number == "3":
-        dic1["記帳城市(免費版)"] += 7
-        dic1["記帳城市(付費版)"] += 7
-        dic1["卡娜赫拉家計簿"] += 6.4
-        dic1["簡單記帳"] += 5.8
-        dic1["MOZE3.0(免費版)"] += 5.2
-        dic1["MOZE3.0(付費版)"] += 5.2
-        dic1["記帳雞"] += 4.6
-        dic1["Ahorro"] += 4
-        dic1["Spendee Budget & Money Tracker"] += 3.4
-        dic1["理財幫手 AndroMoney"] += 2.8
-        dic1["天天記帳"] += 2.2
-        dic1["碎碎念記帳"] += 1.6
+        dic1["記帳城市(免費版)"] += 1 + 10 * 0.6
+        dic1["記帳城市(付費版)"] += 1 + 10 * 0.6
+        dic1["卡娜赫拉家計簿"] += 1 + 9 * 0.6
+        dic1["簡單記帳"] += 1 + 8 * 0.6
+        dic1["MOZE3.0(免費版)"] += 1 + 7 * 0.6
+        dic1["MOZE3.0(付費版)"] += 1 + 7 * 0.6
+        dic1["記帳雞"] += 1 + 6 * 0.6
+        dic1["Ahorro"] += 1 + 5 * 0.6
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 0.6
+        dic1["理財幫手 AndroMoney"] += 1 + 3 * 0.6
+        dic1["天天記帳"] += 1 + 2 * 0.6
+        dic1["碎碎念記帳"] += 1 + 1 * 0.6
         dic1["CW money(免費版)"] += 1
         dic1["CW money(付費版)"] += 1
     elif number == "2":
-        dic1["記帳城市(免費版)"] += 5
-        dic1["記帳城市(付費版)"] += 5
-        dic1["卡娜赫拉家計簿"] += 4.2
-        dic1["簡單記帳"] += 4.2
-        dic1["MOZE3.0(免費版)"] += 3.8
-        dic1["MOZE3.0(付費版)"] += 3.8
-        dic1["記帳雞"] += 3.4
-        dic1["Ahorro"] += 3
-        dic1["Spendee Budget & Money Tracker"] += 2.6
-        dic1["理財幫手 AndroMoney"] += 2.2
-        dic1["天天記帳"] += 1.8
-        dic1["碎碎念記帳"] += 1.4
+        dic1["記帳城市(免費版)"] += 1 + 10 * 0.4
+        dic1["記帳城市(付費版)"] += 1 + 10 * 0.4
+        dic1["卡娜赫拉家計簿"] += 1 + 9 * 0.4
+        dic1["簡單記帳"] += 1 + 8 * 0.4
+        dic1["MOZE3.0(免費版)"] += 1 + 7 * 0.4
+        dic1["MOZE3.0(付費版)"] += 1 + 7 * 0.4
+        dic1["記帳雞"] += 1 + 6 * 0.4
+        dic1["Ahorro"] += 1 + 5 * 0.4
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 0.4
+        dic1["理財幫手 AndroMoney"] += 1 + 3 * 0.4
+        dic1["天天記帳"] += 1 + 2 * 0.4
+        dic1["碎碎念記帳"] += 1 + 1 * 0.4
         dic1["CW money(免費版)"] += 1
         dic1["CW money(付費版)"] += 1
     elif number == "1":
-        dic1["記帳城市(免費版)"] += 3
-        dic1["記帳城市(付費版)"] += 3
-        dic1["卡娜赫拉家計簿"] += 2.8
-        dic1["簡單記帳"] += 2.6
-        dic1["MOZE3.0(免費版)"] += 2.4
-        dic1["MOZE3.0(付費版)"] += 2.4
-        dic1["記帳雞"] += 2.2
-        dic1["Ahorro"] += 2
-        dic1["Spendee Budget & Money Tracker"] += 1.8
-        dic1["理財幫手 AndroMoney"] += 1.6
-        dic1["天天記帳"] += 1.4
-        dic1["碎碎念記帳"] += 1.2
+        dic1["記帳城市(免費版)"] += 1 + 10 * 0.2
+        dic1["記帳城市(付費版)"] += 1 + 10 * 0.2
+        dic1["卡娜赫拉家計簿"] += 1 + 9 * 0.2
+        dic1["簡單記帳"] += 1 + 8 * 0.2
+        dic1["MOZE3.0(免費版)"] += 1 + 7 * 0.2
+        dic1["MOZE3.0(付費版)"] += 1 + 7 * 0.2
+        dic1["記帳雞"] += 1 + 6 * 0.2
+        dic1["Ahorro"] += 1 + 5 * 0.2
+        dic1["Spendee Budget & Money Tracker"] += 1 + 4 * 0.2
+        dic1["理財幫手 AndroMoney"] += 1 + 3 * 0.2
+        dic1["天天記帳"] += 1 + 2 * 0.2
+        dic1["碎碎念記帳"] += 1 + 1 * 0.2
         dic1["CW money(免費版)"] += 1
         dic1["CW money(付費版)"] += 1
 
 
 def fun(number, dic1):  # 趣味性
+    '''
+    依照我們表單所統計得到的資料：
+    投票總人數中有一半的人認為小遊戲（記帳城市）可以增進記帳趣味性，
+    而互動功能（記帳雞、碎碎念記帳）、小故事（卡娜赫拉家計簿）則有1/4的人認為可以增進趣味性，
+    因此我們將記帳程式設為各number中的滿分，而記帳雞、碎碎念記帳、卡娜赫拉家計簿則是滿分的一半做計算。
+    '''
     if number == "5":
         dic1["記帳城市(免費版)"] += 11
         dic1["記帳城市(付費版)"] += 11
-        dic1["卡娜赫拉家計簿"] += 6
-        dic1["記帳雞"] += 6
-        dic1["碎碎念記帳"] += 6
+        dic1["卡娜赫拉家計簿"] += 11/2
+        dic1["記帳雞"] += 11/2
+        dic1["碎碎念記帳"] += 11/2
     elif number == "4":
         dic1["記帳城市(免費版)"] += 9
         dic1["記帳城市(付費版)"] += 9
-        dic1["卡娜赫拉家計簿"] += 5
-        dic1["記帳雞"] += 5
-        dic1["碎碎念記帳"] += 5
+        dic1["卡娜赫拉家計簿"] += 9/2
+        dic1["記帳雞"] += 9/2
+        dic1["碎碎念記帳"] += 9/2
     elif number == "3":
         dic1["記帳城市(免費版)"] += 7
         dic1["記帳城市(付費版)"] += 7
-        dic1["卡娜赫拉家計簿"] += 4
-        dic1["記帳雞"] += 4
-        dic1["碎碎念記帳"] += 4
+        dic1["卡娜赫拉家計簿"] += 7/2
+        dic1["記帳雞"] += 7/2
+        dic1["碎碎念記帳"] += 7/2
     elif number == "2":
         dic1["記帳城市(免費版)"] += 5
         dic1["記帳城市(付費版)"] += 5
-        dic1["卡娜赫拉家計簿"] += 3
-        dic1["記帳雞"] += 3
-        dic1["碎碎念記帳"] += 3
+        dic1["卡娜赫拉家計簿"] += 5/2
+        dic1["記帳雞"] += 5/2
+        dic1["碎碎念記帳"] += 5/2
     elif number == "1":
         dic1["記帳城市(免費版)"] += 3
         dic1["記帳城市(付費版)"] += 3
-        dic1["卡娜赫拉家計簿"] += 2
-        dic1["記帳雞"] += 2
-        dic1["碎碎念記帳"] += 2
+        dic1["卡娜赫拉家計簿"] += 3/2
+        dic1["記帳雞"] += 3/2
+        dic1["碎碎念記帳"] += 3/2
 
 
 def stop(reason, dic1):
@@ -458,12 +473,12 @@ def habit(reason, dic1):
     reasons = reason.replace(' ', '')
     reasons_list = reasons.split(",")
     for res in reasons_list:
-        if res == "時常會借還錢":  # 有提醒借還錢功能者加一分 （歸類在功能性的定時提醒？）
+        if res == "時常會借還錢":  # 有提醒借還錢功能者加一分
             dic1["MOZE3.0(付費版)"] += 1
             dic1["理財幫手 AndroMoney"] += 1
-        if res == "需要信用卡 or 帳單繳費提醒":  # 有此功能者加一分 （歸類在功能性的定時提醒？）
+        if res == "需要信用卡 or 帳單繳費提醒":  # 有此功能者加一分
             dic1["MOZE3.0(付費版)"] += 1
-        if res == "需要紀錄固定開銷":  # 有「設定固定開銷」功能者加一分 （已經統計到功能性中）
+        if res == "需要紀錄固定開銷":  # 有「設定固定開銷」功能者加一分
             dic1["天天記帳"] += 1
             dic1["Ahorro"] += 1
             dic1["簡單記帳"] += 1
@@ -471,7 +486,7 @@ def habit(reason, dic1):
             dic1["MOZE3.0(付費版)"] += 1
             dic1["CW money(免費版)"] += 1
             dic1["CW money(付費版)"] += 1
-        if res == "多帳戶管理（錢包、銀行、信用卡等分別紀錄）":  # 有多帳本功能者加一分 （已經統計到功能性中）
+        if res == "多帳戶管理（錢包、銀行、信用卡等分別紀錄）":  # 有多帳本功能者加一分
             dic1["CW money(免費版)"] += 1
             dic1["CW money(付費版)"] += 1
             dic1["MOZE3.0(免費版)"] += 1
@@ -484,7 +499,7 @@ def habit(reason, dic1):
             dic1["Spendee Budget & Money Tracker"] += 1
             dic1["碎碎念記帳"] += 1
         if res == "紀錄專案：紀錄特定事件所花的帳目（ex.旅行、週年慶）或 預算編製":
-            # 有專案功能 or 編制預算功能者加一分 （已經統計到功能性中）
+            # 有專案功能 or 編制預算功能者加一分
             dic1["MOZE3.0(免費版)"] += 1
             dic1["MOZE3.0(付費版)"] += 1
             dic1["天天記帳"] += 1
@@ -493,7 +508,7 @@ def habit(reason, dic1):
             dic1["記帳城市(付費版)"] += 1
             dic1["CW money(免費版)"] += 1
             dic1["CW money(付費版)"] += 1
-        if res == "需要紀錄不同貨幣":  # 有可用不同貨幣記帳or匯率轉換功能者加一分  （已經統計到功能性中）
+        if res == "需要紀錄不同貨幣":  # 有可用不同貨幣記帳or匯率轉換功能者加一分  
             dic1["理財幫手 AndroMoney"] += 1
             dic1["記帳城市(免費版)"] += 1
             dic1["記帳城市(付費版)"] += 1
