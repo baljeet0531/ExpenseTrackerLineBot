@@ -31,7 +31,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
 handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://14255addbce5.ngrok.io'
+ngrok_url = 'https://d13d497514fe.ngrok.io'
 
 
 # 載入richmenu
@@ -368,7 +368,7 @@ def handle_message(event):
             return
 
     if event.source.type == 'group':  # 群組功能
-        if text == "功能" or text == "記帳幫手":
+        if text == "功能" or text == "記帳幫手" or text == "群組分帳":
             group_id = event.source.group_id
 
             # uri encode
@@ -412,8 +412,12 @@ def handle_postback(event):
         time = event.postback.params
         group_id = event.source.group_id
         user_id = event.source.user_id
-        user_name = line_bot_api.get_profile(
-            user_id).display_name
+        try:
+            user_name = line_bot_api.get_profile(user_id).display_name
+        except:
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(text="請先加我為好友喔!!"))
+            return
 
         reply = lf.register_to_group_data(group_id, user_id, user_name)
 
