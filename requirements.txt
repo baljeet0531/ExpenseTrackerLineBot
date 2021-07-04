@@ -1,0 +1,10 @@
+flask
+requests 
+line-bot-sdk 
+mysql-connector-python
+apscheduler
+os
+json
+requests
+configparser
+urllib

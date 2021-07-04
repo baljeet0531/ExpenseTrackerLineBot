@@ -1,4 +1,5 @@
-# 程式執行流程
-1. 將 ```Linebot_server.py``` 中第34行的 ```ngrok_url``` 的值更改為 ```目前server所在網址```
-2. 執行```Linebot_server.py```
-3. 將line bot中的webhook url網址更改為```目前server所在網址/callback```
+# 目前進度
+因為這是第一次使用docker，所以大部分時間都花在學習docker上，還沒成功將程式跑起來。
+我除了閱讀完老師給的兩個reference，也看完相關影片來了解docker的基本概念及指令（hahow的「docker部署入門完全指南」課程）
+目前是參考在github找到的兩個檔案在做修改，（https://github.com/SuYenTing/Docker_hw/tree/main/hw4 以及 https://github.com/Eat-ice-cream-102/Line_Chat_Bot/blob/master/app.py）
+但是目前只修改完一部分的程式，未將專案成功打包。

@@ -16,9 +16,11 @@ from linebot.models import *
 from linebot.exceptions import InvalidSignatureError
 from linebot import LineBotApi, WebhookHandler
 from flask import Flask, request, abort, send_file
+import mysql.connector
 
-# import XXXX 時如果有error，請google python install XXXX，通常在terminal下 pip install XXXX 指令就可以安裝了
-#
+# 讀取linebot和mysql連線資訊
+secretFile = json.load(open('secretFile.txt', 'r'))
+
 # line bot api reference: https://github.com/line/line-bot-sdk-python
 
 app = Flask(__name__, static_folder='/')  # 建立 Flask 物件
@@ -27,8 +29,11 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # disable cache
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
-handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
+#line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
+#handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
+
+line_bot_api = LineBotApi(secretFile['channelAccessToken'])
+handler = WebhookHandler(secretFile['channelSecret'])
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
 ngrok_url = 'https://d13d497514fe.ngrok.io'
@@ -37,7 +42,8 @@ ngrok_url = 'https://d13d497514fe.ngrok.io'
 # 載入richmenu
 def richmenu():
     try:
-        channel_access_token = config.get('line-bot', 'channel-access-token')
+        #channel_access_token = config.get('line-bot', 'channel-access-token')
+        channel_access_token =secretFile['channelAccessToken']
 
         line_bot_api = LineBotApi(channel_access_token)
 
@@ -535,4 +541,4 @@ if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
 
 if __name__ == "__main__":
     richmenu()
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
