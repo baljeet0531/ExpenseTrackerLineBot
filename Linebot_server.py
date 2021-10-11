@@ -29,21 +29,21 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # disable cache
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-#line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
-#handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
+line_bot_api = LineBotApi(config.get('line-bot', 'channel-access-token'))
+handler = WebhookHandler(config.get('line-bot', 'channel-secret'))
 
-line_bot_api = LineBotApi(secretFile['channelAccessToken'])
-handler = WebhookHandler(secretFile['channelSecret'])
+#line_bot_api = LineBotApi(secretFile['channelAccessToken'])
+#handler = WebhookHandler(secretFile['channelSecret'])
 
 # 如果重開ngrok，記得在這裡以及line channel後台更新網址
-ngrok_url = 'https://d13d497514fe.ngrok.io'
+ngrok_url = 'https://3fdb-114-40-88-207.ngrok.io'
 
 
 # 載入richmenu
 def richmenu():
     try:
         #channel_access_token = config.get('line-bot', 'channel-access-token')
-        channel_access_token =secretFile['channelAccessToken']
+        channel_access_token = secretFile['channelAccessToken']
 
         line_bot_api = LineBotApi(channel_access_token)
 
@@ -350,7 +350,7 @@ def handle_message(event):
 
         elif text == "群組分帳":
             line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(text="把記帳幫手邀請到群組，並在群組中使用\"群組分帳\"功能喔"))
+                event.reply_token, TextSendMessage(text="把記帳幫手邀請到群組(與多人聊天室不同)，並在群組中使用\"群組分帳\"功能喔"))
             return
 
         elif text == "已經記了":
@@ -448,7 +448,7 @@ def handle_postback(event):
 # 收到join event
 @handler.add(JoinEvent)
 def handle_join(event):
-    reply_text = "大家好~我是你們的記帳幫手，在群組中可以替大家完成分帳的任務喔!!\n記得先點選\"開始使用\"在網頁中才看的到妳的名字呦!!"
+    reply_text = "大家好~我是你們的記帳幫手，在群組中可以替大家完成分帳的任務喔!!\n記得先加我為好友再點選\"開始使用\"在網頁中才看的到妳的名字呦!!"
 
     # uri encode
     params = {'groupId': event.source.group_id}
@@ -541,4 +541,4 @@ if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
 
 if __name__ == "__main__":
     richmenu()
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True)

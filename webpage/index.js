@@ -71,7 +71,7 @@ function prependGroupHistory(group_history) {
             }
 
             var txt = ""
-            txt += `<img class=\"category-icon\" src=\"../image/${category}.png\">`
+            txt += `<img class=\"category-icon\" src=\"./image/${category}.png\">`
             txt += "<div class=\"right-border\"></div>"
             txt += "<div class=\"user-name-container\">"
             txt += `<p class=\"user-name\">${host_name}</p>`
@@ -149,7 +149,7 @@ function appendDebts(user_list) {
                 txt += `<p class="user-name">${user_list[user_id]["user_name"]}</p>`
                 txt += "</div>"
                 txt += `<p class="total-cost">${price} twd</p>`
-                txt += "<img class=\"interact-btn received-btn\" src=\"../image/received-btn.png\">"
+                txt += "<img class=\"interact-btn received-btn\" src=\"./image/received-btn.png\">"
                 txt += "</div>"
                 $(`#paid-container .d-list-container .${user_id}`).html(txt);
             }
@@ -166,7 +166,7 @@ function appendDebts(user_list) {
                 txt += `<p class="user-name">${user_list[user_id]["user_name"]}</p>`
                 txt += "</div>"
                 txt += `<p class="total-cost">${price} twd</p>`
-                txt += "<img class=\"interact-btn payback-btn\" src=\"../image/payback-btn.png\">"
+                txt += "<img class=\"interact-btn payback-btn\" src=\"./image/payback-btn.png\">"
                 txt += "</div>"
                 $(`#payback-container .d-list-container .${user_id}`).html(txt);
             }
