@@ -1,2 +1,9 @@
 __pycache__/
 *.pyc
+docker-compose.yml
+mysql-init.sql
+questionnaire_data.json
+user_recommend_data.json
+debt_data.json
+secretFile.txt
+webpage/group_data.json
